@@ -1,4 +1,4 @@
-# DaphneSched2
+# DaphneScale
 
 Evaluating the tradeoff between scalability performance and ease of development
 
