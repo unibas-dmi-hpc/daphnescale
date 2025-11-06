@@ -1,1 +1,0 @@
-mpirun -np 4 singularity --silent exec ../../../daphne-dev.sif ../../../daphne-src-mpi/bin/daphne --distributed --dist_backend=MPI $@
