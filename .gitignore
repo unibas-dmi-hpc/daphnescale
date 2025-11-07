@@ -4,7 +4,7 @@
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 #
 
-*.sif
+#*.sif
 data/mpi/
 # data/mpi-local/wikipedia-20070206/
 data/mpi-local/ljournal-2008/
@@ -25,6 +25,7 @@ benchmark_scripts/connected_components-mpi/cpp/connected_components_*
 benchmark_scripts/pagerank-mpi/cpp/pagerank_*
 .snakemake/
 slurm_out/
+python-test/singularity-sif/**/*-sandbox
 # collect_environment*
 
 # Node artifact files
