@@ -1,0 +1,13 @@
+name: code-metrics
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.12.11
+  - pip
+  - setuptools
+  - wheel
+
+  - pip:
+      - chardet==5.2.0
+      - pygments==2.19.2
