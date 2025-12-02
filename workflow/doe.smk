@@ -23,23 +23,36 @@ MATRICES_CONFIG = [
   # "wikipedia-20070206",
   "ljournal-2008"
 ]
-
+# benchmarks where there is a seq/mpi implementation
 SCRIPTS_WITH_MATRICES = [
+  "connected_components",
+]
+# benchmarks where the seq implementation is used as par, e.g. for cc, there is only one
+SEQ_AS_PAR_SCRIPTS_WITH_MATRICES = [
   "connected_components"
+]
+# benchmarks where there is a separate par implementation too
+PAR_SCRIPTS_WITH_MATRICES = [
 ]
 
 SCRIPTS_WITHOUT_MATRICES = [
   "nbody"
 ]
-
-NUM_THREADS = [
-  1,
-  2,
-  4,
-  8,
-  16,
-  32
+SEQ_AS_PAR_SCRIPTS_WITHOUT_MATRICES = [
 ]
+PAR_SCRIPTS_WITHOUT_MATRICES = [
+  "nbody"
+]
+
+TOTAL_ITERS = 5
+ITERATIONS = range(1, TOTAL_ITERS + 1)
+
+# Threading experiments
+NUM_THREADS_PAR = [1,2,4,8,16,32]
+NUM_THREADS_SEQ = [2,4,8,16,32]
+
+# MPI scaling over nodes
+MPI_SCALE_NB_NODES = [1,2,4,8,16,32]
 
 MPI_LOCAL = {
   # total-mpi-procs, task-per-node, cpu-per-task
@@ -57,9 +70,6 @@ MPI_LOCAL = {
   # "128": (128, 1),  
 }
 
-# MPI scaling over nodes
-MPI_SCALE_NB_NODES = [1,2,4,8]
-
 # MPI distributed with many processes on multiple nodes
 MPI_NB_NODES=4
 # MPI_DISTRIBUTION = {
@@ -74,10 +84,6 @@ MPI_NB_NODES=4
 #   "256": (64, 2),
 #   "512": (128, 1)
 # }
-
-# TOTAL_ITERS = 5
-TOTAL_ITERS = 1  # for testing
-ITERATIONS = range(1, TOTAL_ITERS + 1)
 
 SCHEMES = [
   "STATIC",

@@ -1,0 +1,11 @@
+The reason was, that old experiments were not running on VEGA if not specifying --cpus-per-task in the sbatch but only in s run. 
+
+Did not work:
+sbatch {input.sbatch} {wildcards.num_threads} {input.script} {input.mtx} {params.matrix_size} {output}
+--> see slurm-14027369.out, only 2 CPUs are in the allowed list, not enough if requesting 4
+
+Did work:
+sbatch --cpus-per-task={wildcards.num_threads} {input.sbatch} {wildcards.num_threads} {input.script} {input.mtx} {params.matrix_size} {output}
+--> see slurm-14027650.out, more then 4 cpus allowed so working.
+
+The interesting part.: Why did the behaviour of VEGA change.
