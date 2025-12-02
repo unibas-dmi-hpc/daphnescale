@@ -6,6 +6,7 @@
 
 *.sif
 daphne-src-mpi/
+daphne-src/
 
 results/
 
