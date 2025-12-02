@@ -1,6 +1,6 @@
 {
   "files": {
-    "/Users/kruret00/daphneSched/git/benchmark_scripts/connected_components/jl/connected_components.jl": {
+    "/ceph/hpc/data/d2025d03-111-users/daphnescale/benchmark_scripts/connected_components-seq/jl/connected_components.jl": {
       "comment_ratio": 11.384,
       "cyclomatic_complexity": 13,
       "fanout_external": 3,

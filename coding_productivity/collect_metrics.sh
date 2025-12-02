@@ -4,12 +4,10 @@
 
 # entries of the form benchmark-name:algo-name:short-form:type
 entries=(
-    "connected_components:connected_components:cc:seq" 
-    "connected_components-mpi:connected_components:cc:mpi"
-    "pagerank:pagerank:pr:seq" 
-    "pagerank-mpi:pagerank:pr:mpi"    
+    "connected_components-seq:connected_components:cc:seq"   
+    "connected_components-mpi:connected_components:cc:mpi"   
 )
-langs=("cpp" "py" "jl" "daph")
+langs=("py" "jl" "cpp" "daph")
 indir="../../../benchmark_scripts"
 outdir="../../metrics"
 
@@ -17,7 +15,8 @@ outdir="../../metrics"
 rm "${outdir}"*.json 2>/dev/null
 
 # activate conda env
-source /opt/miniconda3/etc/profile.d/conda.sh # adapt this path for your local miniconda installation
+ml Anaconda3/2023.07-2
+source /cvmfs/sling.si/modules/el7/software/Anaconda3/2023.07-2/etc/profile.d/conda.sh
 conda activate code-metrics
 # change to multimetric folder
 cd ./multimetric/multimetric
