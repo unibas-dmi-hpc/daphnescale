@@ -55,23 +55,6 @@ function read_and_send_matrix(filename)
   end
 end
 
-# function G_broadcast_mult_c(G, c)
-#   cols = colvals(G)
-#   vals = nonzeros(G)
-#   m, n = size(G)
-#   maxs = zeros(n)
-#   @Threads.threads for j = 1:m
-#      for i in nzrange(G, j)
-#         col = cols[i]
-#         val = vals[i]
-#         if val * c[j] > maxs[col]
-#           maxs[col] = val*c[j]
-#         end
-#      end
-#   end
-#   maxs
-# end
-
 function G_broadcast_mult_c(G, c)
   cols = colvals(G)
   vals = nonzeros(G)
