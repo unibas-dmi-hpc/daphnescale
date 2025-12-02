@@ -9,21 +9,21 @@ rule all:
       benchmark=SCRIPTS_WITH_MATRICES,\
       lang=LANGUAGES,\
       num_threads=[1],\
-      iter=ITERATIONS),     
+      iter=ITERATIONS),
     expand("results/{benchmark}/{matrix}/par/{lang}/{num_threads}/{iter}.dat",\
       matrix=MATRICES,\
       benchmark=SEQ_AS_PAR_SCRIPTS_WITH_MATRICES,\
       lang=LANGUAGES,\
       num_threads=NUM_THREADS_SEQ,\
       # num_threads=[32],\
-      iter=ITERATIONS),    
+      iter=ITERATIONS),
     expand("results/{benchmark}/{matrix}/par/{lang}/{num_threads}/{iter}.dat",\
       matrix=MATRICES,\
       benchmark=PAR_SCRIPTS_WITH_MATRICES,\
       lang=LANGUAGES,\
-      num_threads=NUM_THREADS_PAR,\      
+      num_threads=NUM_THREADS_PAR,\
       # num_threads=[32],\
-      iter=ITERATIONS),      
+      iter=ITERATIONS),
  
 rule run_expe_seq:
   input:
