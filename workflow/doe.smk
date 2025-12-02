@@ -13,26 +13,19 @@ LANGUAGES = [
 ]
 
 MATRICES = [
-  "amazon0601",
-   "wikipedia-20070206",
-  #"ljournal-2008"
+  #"amazon0601",
+  #"wikipedia-20070206",
+  "ljournal-2008"
 ]
 
 MATRICES_CONFIG = [
-  "amazon0601",
-  "wikipedia-20070206",
-]
-
-SCRIPTS_MPI_WITH_MATRICES = [
-  "connected_components",
-  #"pagerank",
+  # "amazon0601",
+  # "wikipedia-20070206",
+  "ljournal-2008"
 ]
 
 SCRIPTS_WITH_MATRICES = [
-  "connected_components",
-  # "pagerank",
-  #"bfs",
-  #"triangle_count"
+  "connected_components"
 ]
 
 SCRIPTS_WITHOUT_MATRICES = [
@@ -45,9 +38,7 @@ NUM_THREADS = [
   4,
   8,
   16,
-  32,
-  64,
-  128
+  32
 ]
 
 MPI_LOCAL = {
@@ -67,7 +58,7 @@ MPI_LOCAL = {
 }
 
 # MPI scaling over nodes
-MPI_SCALE_NB_NODES = [1,2,3,4,5]
+MPI_SCALE_NB_NODES = [1,2,4,8]
 
 # MPI distributed with many processes on multiple nodes
 MPI_NB_NODES=4
@@ -84,8 +75,8 @@ MPI_NB_NODES=4
 #   "512": (128, 1)
 # }
 
-TOTAL_ITERS = 5
-# TOTAL_ITERS = 1  # for testing
+# TOTAL_ITERS = 5
+TOTAL_ITERS = 1  # for testing
 ITERATIONS = range(1, TOTAL_ITERS + 1)
 
 SCHEMES = [
