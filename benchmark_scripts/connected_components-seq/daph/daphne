@@ -1,0 +1,1 @@
+singularity --silent exec ../../../daphne-dev.sif ../../../daphne-src/bin/daphne $@
