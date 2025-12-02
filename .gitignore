@@ -4,20 +4,10 @@
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 #
 
-#*.sif
-data/mpi/
-# data/mpi-local/wikipedia-20070206/
-data/mpi-local/ljournal-2008/
-# data/mpi-local/amazone0601
-# data/mpi_scale_nodes_32/
-# data/mpi_scale_nodes/wikipedia-20070206/
-data/mpi_scale_nodes/ljournal-2008/
-# data/mpi_scale_nodes/amazone0601
-# data/seq-local/wikipedia-20070206/
-data/seq-local/ljournal-2008/
-# data/seq-local/amazone0601
-tmp-mpi-scale-results-64/
-tmp-daph-mpi-local/
+*.sif
+
+results/
+
 smake/
 benchmark_scripts/connected_components/cpp/connected_components_*
 benchmark_scripts/pagerank/cpp/pagerank_*
