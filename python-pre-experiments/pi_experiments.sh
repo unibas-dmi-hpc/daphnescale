@@ -27,7 +27,7 @@ combos=(
 	"mp-threads py314 python viztracer"
 	"mp-map py314 python viztracer"
 	"mp-imap py314 python viztracer"
-	"mp-imap_unordered py314 python viztracer"  
+	"mp-imap-unordered py314 python viztracer"  
 	"mpi4py py314 mpi none"	
 	"numba py312 python none"
 	"pyomp py312 python none"	
