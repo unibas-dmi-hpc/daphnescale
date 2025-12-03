@@ -18,7 +18,7 @@ combos=(
 	# "mp-threads py314t python viztracer"
 	# "mp-map py314t python viztracer"
 	# "mp-imap py314t python viztracer"
-	# "mp-imap_unordered py314t python viztracer"  
+	# "mp-imap-unordered py314t python viztracer"  
 	"omp4py-static py314t omp none"
 	"omp4py-dynamic py314t omp none"
 	"omp4py-guided py314t omp none"

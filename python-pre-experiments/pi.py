@@ -449,7 +449,7 @@ WAYS = {
     'mp-threads': pi_mp_threads,
     'mp-map': pi_mp_map,
     'mp-imap': pi_mp_imap,
-    'mp-imap_unordered': pi_mp_imap_unordered,
+    'mp-imap-unordered': pi_mp_imap_unordered,
     'numba': pi_numba,
     'pyomp': pi_pyomp,
     'omp4py-static': pi_omp4py_static,
