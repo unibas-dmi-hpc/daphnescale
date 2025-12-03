@@ -5,6 +5,7 @@
 #
 
 *.sif
+*_sandbox/
 daphne-src-mpi/
 daphne-src/
 
