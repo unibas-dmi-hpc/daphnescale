@@ -12,10 +12,8 @@ daphne-src/
 results/
 
 smake/
-benchmark_scripts/connected_components/cpp/connected_components_*
-benchmark_scripts/pagerank/cpp/pagerank_*
-benchmark_scripts/connected_components-mpi/cpp/connected_components_*
-benchmark_scripts/pagerank-mpi/cpp/pagerank_*
+# compiled cpp files
+benchmark_scripts/connected_components-*/cpp/connected_components_*
 .snakemake/
 slurm_out/
 # collect_environment*
