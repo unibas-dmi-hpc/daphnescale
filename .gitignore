@@ -4,13 +4,17 @@
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 #
 
+# containers and sandboxes
 *.sif
 *_sandbox/
 daphne-src-mpi/
 daphne-src/
 
+# result folders
 results/
+results-py
 
+# workflow files
 smake/
 # compiled cpp files
 benchmark_scripts/connected_components-*/cpp/connected_components_*
