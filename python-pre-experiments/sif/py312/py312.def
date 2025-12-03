@@ -1,0 +1,53 @@
+Bootstrap: docker
+From: gcc:13
+
+%labels
+    Author YourName
+    Version v1
+    Description Python 3.12 (from source) + Numba + PyOMP
+
+%environment
+    export PATH=/opt/python312/bin:/opt/scorep/bin:/usr/local/bin:/usr/bin:$PATH
+    export LD_LIBRARY_PATH=/opt/scorep/lib:/usr/local/lib:/usr/lib:$LD_LIBRARY_PATH
+    export PYTHONUNBUFFERED=1
+
+%post
+    set -eux
+
+    echo "### Installing required packages..."
+    apt-get update -y && apt-get install -y --no-install-recommends \
+        wget curl git cmake ninja-build pkg-config make \
+        libffi-dev libssl-dev libbz2-dev zlib1g-dev \
+        libncurses-dev libsqlite3-dev liblzma-dev \
+        libreadline-dev libgdbm-dev libnsl-dev ca-certificates \
+        libomp-dev \
+        libbfd-dev binutils-dev \
+        && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    echo "### Building Python 3.12 from source..."
+    cd /tmp
+    PY_VER=3.12.7
+    wget -q https://www.python.org/ftp/python/${PY_VER}/Python-${PY_VER}.tgz
+    tar xf Python-${PY_VER}.tgz && cd Python-${PY_VER}
+    ./configure --prefix=/opt/python312 --enable-optimizations --enable-shared
+    make -j"$(nproc)"
+    make install
+
+    echo "/opt/python312/lib" > /etc/ld.so.conf.d/python312.conf
+    ldconfig
+
+    echo "### Installing Numba and PyOMP..."
+    /opt/python312/bin/pip3 install --no-cache-dir -U pip setuptools wheel
+    /opt/python312/bin/pip3 install --no-cache-dir numba pyomp
+
+  echo "### Cleanup..."
+  rm -rf /root/.cache /var/lib/apt/lists/* /tmp/build || true
+
+%runscript
+    echo "Python 3.12 (source-built) + Numba (with PyOMP) 0.60.0
+
+%help
+Python 3.12 + Numba + PyOMP container.
+Usage:
+  singularity exec py312.sif python3 --version
+  singularity exec py312.sif scorep --version

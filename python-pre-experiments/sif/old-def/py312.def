@@ -1,0 +1,74 @@
+Bootstrap: docker
+From: gcc:13
+
+%labels
+    Author YourName
+    Version v1
+    Description Python 3.12 (from source) + Numba + PyOMP + OpenMPI + Score-P 9.3 (GCC base)
+
+%environment
+    export PATH=/opt/python312/bin:/opt/scorep/bin:/usr/local/bin:/usr/bin:$PATH
+    export LD_LIBRARY_PATH=/opt/scorep/lib:/usr/local/lib:/usr/lib:$LD_LIBRARY_PATH
+    export PYTHONUNBUFFERED=1
+
+%post
+    set -eux
+
+    echo "### Installing required packages..."
+    apt-get update -y && apt-get install -y --no-install-recommends \
+        wget curl git cmake ninja-build pkg-config make \
+        libffi-dev libssl-dev libbz2-dev zlib1g-dev \
+        libncurses-dev libsqlite3-dev liblzma-dev \
+        libreadline-dev libgdbm-dev libnsl-dev ca-certificates \
+        libomp-dev \
+        openmpi-bin libopenmpi-dev \
+        libbfd-dev binutils-dev \
+        && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    echo "### Building Python 3.12 from source..."
+    cd /tmp
+    PY_VER=3.12.7
+    wget -q https://www.python.org/ftp/python/${PY_VER}/Python-${PY_VER}.tgz
+    tar xf Python-${PY_VER}.tgz && cd Python-${PY_VER}
+    ./configure --prefix=/opt/python312 --enable-optimizations --enable-shared
+    make -j"$(nproc)"
+    make install
+
+    echo "/opt/python312/lib" > /etc/ld.so.conf.d/python312.conf
+    ldconfig
+
+    echo "### Installing Numba and PyOMP..."
+    /opt/python312/bin/pip3 install --no-cache-dir -U pip setuptools wheel
+    /opt/python312/bin/pip3 install --no-cache-dir numba pyomp
+
+    echo "### Building Score-P 9.3 (with OpenMPI + GOTCHA)..."
+    mkdir -p /tmp/build/scorep && cd /tmp/build/scorep
+    wget -L https://perftools.pages.jsc.fz-juelich.de/cicd/scorep/tags/scorep-9.3/scorep-9.3.tar.gz -O scorep-9.3.tar.gz
+    tar xf scorep-9.3.tar.gz
+    cd scorep-9.3
+    ./configure --prefix=/opt/scorep \
+                --with-mpi=openmpi \
+                --with-libgotcha=download \
+                --without-shmem \
+                --without-cuda --without-rocm --without-opencl
+    make -j"$(nproc)"
+    make install
+    cd / && rm -rf /tmp/build/scorep
+
+    echo "### Installing Python bindings for Score-P..."
+    export PATH=/opt/scorep/bin:$PATH
+    export LD_LIBRARY_PATH=/opt/scorep/lib:/opt/python312/lib:$LD_LIBRARY_PATH
+    /opt/python312/bin/pip3 install --no-cache-dir scorep
+
+  echo "### Cleanup..."
+  rm -rf /root/.cache /var/lib/apt/lists/* /tmp/build || true
+
+%runscript
+    echo "Python 3.12 (source-built) + Numba (with PyOMP) 0.60.0 + OpenMPI + Score-P 9.3 (GCC base) + ScoreP Python bindings 4.4.0"
+    exec /opt/py312/bin/python "$@"
+
+%help
+Python 3.12 + Numba + PyOMP + OpenMPI + Score-P 9.3 container.
+Usage:
+  singularity exec py312.sif python3 --version
+  singularity exec py312.sif scorep --version

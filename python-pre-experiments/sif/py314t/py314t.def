@@ -1,0 +1,79 @@
+Bootstrap: docker
+From: gcc:13
+
+%labels
+    Author YourName
+    Version v1
+    Description "Python 3.14 (no GIL) + NumPy + VizTracer + omp4py (MPI from host modules)"
+
+%environment
+    # Let our Python override anything from the host
+    export PATH=/opt/python314t/bin:/usr/local/bin:/usr/bin:$PATH
+    # Avoid buffered output
+    export PYTHONUNBUFFERED=1
+
+%post
+    set -eux
+
+    echo "### Installing system dependencies (NO MPI HERE!)"
+    apt-get update -y && apt-get install -y --no-install-recommends \
+        wget curl git \
+        make cmake ninja-build pkg-config \
+        libffi-dev libssl-dev zlib1g-dev libbz2-dev \
+        libncurses-dev libsqlite3-dev liblzma-dev \
+        build-essential libmunge2 libmunge-dev \
+        libreadline-dev libgdbm-dev libnsl-dev ca-certificates \
+        && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+    echo "### Building Python 3.14 (no GIL) from source..."
+    cd /tmp
+    PY_VER=3.14.0
+    wget -q https://www.python.org/ftp/python/${PY_VER}/Python-${PY_VER}.tgz
+    tar xf Python-${PY_VER}.tgz
+    cd Python-${PY_VER}
+
+    ./configure \
+        --disable-gil \
+        --enable-optimizations \
+        --enable-shared \
+        --prefix=/opt/python314t
+
+    make -j"$(nproc)"
+    make install
+
+    echo "/opt/python314t/lib" > /etc/ld.so.conf.d/python314t.conf
+    ldconfig
+
+    echo "### Upgrading pip and installing core Python packages"
+    /opt/python314t/bin/pip3 install --no-cache-dir -U pip setuptools wheel Cython
+
+    echo "### Installing numpy, viztracer, omp4py"
+    /opt/python314t/bin/pip3 install --no-cache-dir numpy
+    /opt/python314t/bin/pip3 install --no-cache-dir scipy
+    /opt/python314t/bin/pip3 install --no-cache-dir viztracer
+    /opt/python314t/bin/pip3 install --no-cache-dir git+https://github.com/citiususc/omp4py.git
+
+    echo "### NOTE: mpi4py is NOT installed here."
+    echo "### It will be provided by: module load mpi4py/4.0.1-gompi-2024a"
+
+    echo "### Cleanup"
+    rm -rf /root/.cache || true
+    rm -rf /tmp/Python-${PY_VER} || true
+
+%runscript
+    echo "Python 3.14 (GIL-disabled) container; MPI and Score-P provided by host modules."
+    exec /opt/python314t/bin/python "$@"
+
+%help
+This container includes:
+  - Python 3.14 (with GIL disabled)
+  - NumPy
+  - VizTracer
+  - omp4py
+
+MPI NOT in the container. Use the host's modules:
+  module load gompi/2024a
+  module load mpi4py/4.0.1-gompi-2024a
+
+Then run:
+  srun --mpi=pmix singularity exec py314t.sif python pi.py

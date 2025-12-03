@@ -1,0 +1,40 @@
+#!/bin/bash
+#SBATCH --partition=cpu
+#SBATCH --nodes=1
+#SBATCH --ntasks=4
+#SBATCH --time=0-00:03:00
+#SBATCH --hint=nomultithread
+#SBATCH --mem=8G
+#SBATCH --job-name=pi-mpi4py-test
+#SBATCH --output=pi-mpi4py-test.out
+
+# Adjust these paths if needed:
+SIF="/ceph/hpc/data/d2025d03-111-users/python-test/singularity-sif/py314t/py314t.sif"
+PI_SCRIPT="/ceph/hpc/data/d2025d03-111-users/python-test/pi.py"
+
+# ---------- Host side: load MPI ----------
+module purge
+module load OpenMPI/4.1.6-GCC-13.2.0
+
+# Make sure LD_LIBRARY_PATH passed into container is correct
+export SINGULARITYENV_LD_LIBRARY_PATH="/cvmfs/sling.si/modules/el7/software/OpenMPI/4.1.6-GCC-13.2.0/lib:/opt/python314t/lib"
+
+# Transport UCX/OMPI/PMIX hints into the container as well
+export UCX_TLS=self,sm
+export OMPI_MCA_PML=ucx
+export PMIX_MCA_gds=hash
+
+export SINGULARITYENV_UCX_TLS="$UCX_TLS"
+export SINGULARITYENV_OMPI_MCA_PML="$OMPI_MCA_PML"
+export SINGULARITYENV_PMIX_MCA_gds="$PMIX_MCA_gds"
+
+echo "===== HOST ENV (before srun) ====="
+echo "HOST LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
+echo "SINGULARITYENV_LD_LIBRARY_PATH: $SINGULARITYENV_LD_LIBRARY_PATH"
+echo "UCX_TLS=$UCX_TLS OMPI_MCA_PML=$OMPI_MCA_PML PMIX_MCA_gds=$PMIX_MCA_gds"
+echo "=================================="
+
+# ---------- Run container via srun ----------
+srun --mpi=pmix \
+  singularity exec -B /cvmfs:/cvmfs "$SIF" \
+  python3 "$PI_SCRIPT" mpi4py 1000000

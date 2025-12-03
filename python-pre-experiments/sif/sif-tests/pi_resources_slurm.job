@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH --partition=cpu
+#SBATCH --hint=nomultithread
+#SBATCH --time=0-00:03:00
+#SBATCH --mem=4G
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=2
+#SBATCH --cpus-per-task=2
+
+
+# ------------------------------
+# Execute via SLURM
+# ------------------------------
+ml Python
+python3 slurm_resources.py > slurm_resources.txt
