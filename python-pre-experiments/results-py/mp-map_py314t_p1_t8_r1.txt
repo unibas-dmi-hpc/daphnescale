@@ -1,0 +1,7 @@
+Approximation of pi mp-map with 500'000'000 intervals: 3.1415926535899676
+Absolute error: 1.7452705947e-13  |  Relative error: 5.555e-14
+Detected 1 threads and 8 processes/ranks (total workers: 8)
+Time taken mp-map: 15.835270 seconds
+---------------------------
+Experiment mp-map with 3.14.0 free-threading build (main, Dec  2 2025, 12:10:28) [GCC 13.4.0] (GIL enabled: False) finsihed.
+===========================

@@ -1,0 +1,7 @@
+Approximation of pi mp-imap-unordered with 500'000'000 intervals: 3.1415926535897696
+Absolute error: 2.3536728122e-14  |  Relative error: 7.492e-15
+Detected 1 threads and 2 processes/ranks (total workers: 2)
+Time taken mp-imap-unordered: 49.626523 seconds
+---------------------------
+Experiment mp-imap-unordered with 3.14.0 (main, Nov 27 2025, 15:04:44) [GCC 13.4.0] (GIL enabled: True) finsihed.
+===========================

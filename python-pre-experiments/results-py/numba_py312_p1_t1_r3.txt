@@ -1,0 +1,9 @@
+Threading layer chosen: omp
+Numba detected 1 threads.
+Approximation of pi numba with 500'000'000 intervals: 3.141592653589814
+Absolute error: 2.0872192863e-14  |  Relative error: 6.644e-15
+Detected 1 threads and 1 processes/ranks (total workers: 1)
+Time taken numba: 4.026071 seconds
+---------------------------
+Experiment numba with 3.12.7 (main, Nov 27 2025, 15:05:04) [GCC 13.4.0] finsihed.
+===========================

@@ -1,0 +1,7 @@
+Approximation of pi pyomp with 500'000'000 intervals: 0.0
+Absolute error: 3.1415926536e+00  |  Relative error: 1.000e+00
+Detected 1 threads and 1 processes/ranks (total workers: 1)
+Time taken pyomp: 3.194056 seconds
+---------------------------
+Experiment pyomp with 3.12.7 (main, Nov 27 2025, 15:05:04) [GCC 13.4.0] finsihed.
+===========================

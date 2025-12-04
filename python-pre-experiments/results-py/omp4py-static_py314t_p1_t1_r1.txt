@@ -1,0 +1,8 @@
+OMP threads: None
+Approximation of pi omp4py-static with 500'000'000 intervals: 3.141592653589814
+Absolute error: 2.0872192863e-14  |  Relative error: 6.644e-15
+Detected 1 threads and 1 processes/ranks (total workers: 1)
+Time taken omp4py-static: 82.954245 seconds
+---------------------------
+Experiment omp4py-static with 3.14.0 free-threading build (main, Dec  2 2025, 12:10:28) [GCC 13.4.0] (GIL enabled: False) finsihed.
+===========================

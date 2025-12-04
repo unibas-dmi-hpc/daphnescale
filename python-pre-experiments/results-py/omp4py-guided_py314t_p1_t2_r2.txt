@@ -1,0 +1,8 @@
+OMP threads: None
+Approximation of pi omp4py-guided with 500'000'000 intervals: 3.1415926535897696
+Absolute error: 2.3536728122e-14  |  Relative error: 7.492e-15
+Detected 1 threads and 2 processes/ranks (total workers: 2)
+Time taken omp4py-guided: 62.410908 seconds
+---------------------------
+Experiment omp4py-guided with 3.14.0 free-threading build (main, Dec  2 2025, 12:10:28) [GCC 13.4.0] (GIL enabled: False) finsihed.
+===========================
