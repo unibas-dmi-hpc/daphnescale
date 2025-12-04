@@ -11,7 +11,7 @@ daphne-src-mpi/
 daphne-src/
 
 # result folders
-results/connected_components/
+#results/connected_components/
 results/nbody/
 results/mergesort/
 # results-py
