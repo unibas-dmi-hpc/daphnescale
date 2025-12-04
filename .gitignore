@@ -11,8 +11,10 @@ daphne-src-mpi/
 daphne-src/
 
 # result folders
-results/
-results-py
+results/connected_components/
+results/nbody/
+results/mergesort/
+# results-py
 
 # workflow files
 smake/
