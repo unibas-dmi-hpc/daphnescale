@@ -1,18 +1,17 @@
 using Random
 using Base.Threads
-using Profile
 
 DELTA_TIME=1
 CONST_G=1
 
 mutable struct Particle{T<:Real}
     mass::T
-    posx::T    
-    posy::T    
-    velx::T    
-    vely::T    
-    accx::T    
-    accy::T    
+    posx::T
+    posy::T
+    velx::T
+    vely::T
+    accx::T
+    accy::T
 end
 
 function distance(p1::Particle, p2::Particle)::Real
@@ -48,26 +47,27 @@ function simulate(nb_particles::Int, nb_timesteps::Int)
         before = time()
         # Computing new forces
         for i in 1:nb_particles
-            @threads for j in (i+1):nb_particles
+            for j in (i+1):nb_particles
                 update_acceleration!(particles[i], particles[j])
                 update_acceleration!(particles[j], particles[i])
             end
         end
         # Updating the rest
-        @threads for i in 1:nb_particles
+        for i in 1:nb_particles
             update_velocity!(particles[i])
             update_position!(particles[i])
             reset_force!(particles[i])
         end
         elapsed = time() - before
-        println("[$(t)/$(nb_timesteps)] $(elapsed)")
+        println("[$(t)/$(nb_timesteps)] $(elapsed) $(particles[1].posx)")
     end
 end
 
 
 function main()
+    Random.seed!(0)
     nb_particles = 1000
-    nb_timesteps = 30
+    nb_timesteps = 10
     simulate(nb_particles, nb_timesteps)
 end
 

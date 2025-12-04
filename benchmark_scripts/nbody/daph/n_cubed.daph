@@ -1,0 +1,42 @@
+n = $n;
+gravity = 0.00001;
+step_size = 20.0 / 1000.0;
+half_step_size = step_size / 2.0;
+softening = 0.1;
+
+position = rand(n, 2, -10.0, 10.0, 1.0, -1);
+velocity = fill(0.0, n, 2);
+acceleration = fill(0.0, n, 2);
+mass = fill(500.0, n, 1);
+
+com_p = sum(mass * position) / (500.0 * n);
+com_v = sum(mass * velocity) / (500.0 * n);
+
+position[0, ] = fill(0.0, 1, 2);
+velocity[0, ] = fill(0.0, 1, 2);
+mass[0, ] = fill(10000.0, 1, 1);
+
+position = position - com_p;
+velocity = velocity - com_v;
+
+
+nb_timesteps = $t;
+t1 = now();
+for (t in 1:nb_timesteps) {
+  before = now();
+  velocity = velocity + acceleration * half_step_size;
+  position = position + velocity * step_size;
+
+  dx = fill(1.0, n, 1) @ t(position[,0]) - position[,0];
+  dy = fill(1.0, n, 1) @ t(position[,1]) - position[,1];
+
+  inv_r3 = (dx^2 + dy^2 + softening^2)^(-1.5);
+  acceleration = fill(0.0, n, 2);
+  acceleration[:,0] = gravity * (dx * inv_r3) @ mass;
+  acceleration[:,1] = gravity * (dy * inv_r3) @ mass;
+  velocity = velocity + acceleration * half_step_size;
+  elapsed = (now() - before)/1e9;
+  //print("["+t+"/"+nb_timesteps+"] "+elapsed);
+}
+t2 = now();
+print((t2 - t1) / 1000000000.0);
