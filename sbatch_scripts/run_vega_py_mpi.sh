@@ -25,6 +25,6 @@ export UCX_TLS=self,sm
 export OMPI_MCA_PML="ucx"
 export PMIX_MCA_gds="hash"
 
-srun --mpi=pmix --cpus-per-task=${NUM_THREADS} singularity exec -B /cvmfs:/cvmfs ${SLURM_SUBMIT_DIR}/jupycpp.sif python3 ${SLURM_SUBMIT_DIR}/${SCRIPT} ${SLURM_SUBMIT_DIR}/${MATRIX_PATH} > ${SLURM_SUBMIT_DIR}/${RESULT}
+srun --mpi=pmix --cpus-per-task=${NUM_THREADS} singularity exec -B /cvmfs:/cvmfs ${SLURM_SUBMIT_DIR}/py314t.sif python3 ${SLURM_SUBMIT_DIR}/${SCRIPT} ${SLURM_SUBMIT_DIR}/${MATRIX_PATH} > ${SLURM_SUBMIT_DIR}/${RESULT}
 
 exit 0
