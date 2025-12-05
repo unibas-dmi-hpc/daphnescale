@@ -1,0 +1,7 @@
+Approximation of pi seq with 500'000'000 intervals: 3.141592653589814
+Absolute error: 2.0872192863e-14  |  Relative error: 6.644e-15
+Detected 1 threads and 1 processes/ranks (total workers: 1)
+Time taken seq: 92.273874 seconds
+---------------------------
+Experiment seq with 3.14.0 free-threading build (main, Dec  5 2025, 11:29:37) [GCC 13.4.0] (GIL enabled: False) finsihed.
+===========================

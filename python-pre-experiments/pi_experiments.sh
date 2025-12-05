@@ -23,6 +23,7 @@ combos=(
 	"omp4py-dynamic py314t omp none"
 	"omp4py-guided py314t omp none"
 	"mpi4py py314t mpi none"
+	"numpy py314t python viztracer"
 	"seq py314 seq none"
 	"mp-threads py314 python viztracer"
 	"mp-map py314 python viztracer"
@@ -31,11 +32,10 @@ combos=(
 	"mpi4py py314 mpi none"	
 	"numba py312 python none"
 	"pyomp py312 python none"	
-	"numpy py314t python viztracer"
 	"numpy py314 python viztracer"
 )
 
-profile=1 # 0 false --> performance experiment, 1 true --> profiling experiment
+profile=0 # 0 false --> performance experiment, 1 true --> profiling experiment
 
 nodes=1  # single node experiments
 
@@ -71,10 +71,10 @@ do
 		elif [[ "$parallel_type" == "python" || "$parallel_type" == "omp" ]]; then
 			ranks_per_node_list="1"
 			cpus_per_rank_list="1 2 4 8"
-			#cpus_per_rank_list="4"
+			# cpus_per_rank_list="4"
 		elif [[ "$parallel_type" == "mpi" ]]; then
 			ranks_per_node_list="1 2 4 8"
-			# ranks_per_node_list="4"
+			# ranks_per_node_list="8"
 			cpus_per_rank_list="1"
 		fi			
 	else
