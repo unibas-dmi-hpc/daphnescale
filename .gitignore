@@ -10,11 +10,15 @@
 daphne-src-mpi/
 daphne-src/
 
-# result folders
+# performance result folders
 #results/connected_components/
 results/nbody/
 results/mergesort/
-# results-py
+results/pi-approx/
+# python-pre-experiments/results-py
+
+# profiling results tooo large to commit.
+python-pre-experiments/results-py/profiling/
 
 # workflow files
 smake/
