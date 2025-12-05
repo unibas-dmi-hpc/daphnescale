@@ -9,7 +9,7 @@ singularity build --fakeroot --sandbox py314_sandbox/ py314.def
 module purge
 module load gompi/2024a
 
-singularity exec --writable py314_sandbox \
+singularity exec --no-mount /ceph --writable py314_sandbox \
     env CC=mpicc MPICC=mpicc \
     python3 -m pip install mpi4py --no-build-isolation
 

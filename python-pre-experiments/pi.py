@@ -70,6 +70,31 @@ def pi_seq(n: int) -> float:
     pi = pi * w
     return pi, (n_task, n_cpu, n_task * n_cpu)
 
+def pi_numpy(n: int) -> float:
+    """
+    Computes an approximation of pi using the midpoint rule with NumPy.
+
+    Args:
+        n (int): Number of subintervals.
+
+    Returns:
+        float: Approximation of pi.
+    """
+    np = importlib.import_module('numpy')
+
+    n_cpu = get_slurm_resources().get('SLURM_CPUS_PER_TASK')
+    n_task = get_slurm_resources().get('SLURM_NTASKS_PER_NODE')
+
+    w = 1.0 / n                            
+    i = np.arange(n)                  
+    local = (i + 0.5) * w                          
+    # Vectorized evaluation of f(x) = 4 / (1 + x²)
+    vals = 4.0 / (1.0 + local * local)
+
+    pi = np.sum(vals) * w
+
+    return pi, (n_task, n_cpu, n_task * n_cpu)
+
 def pi_mp_threads(n: int) -> float:
     """
     Computes an approximation of pi using the midpoint rule with multiprocessing but with threads.
@@ -446,6 +471,7 @@ def get_slurm_resources():
 
 WAYS = {
     'seq': pi_seq,
+    'numpy': pi_numpy,
     'mp-threads': pi_mp_threads,
     'mp-map': pi_mp_map,
     'mp-imap': pi_mp_imap,

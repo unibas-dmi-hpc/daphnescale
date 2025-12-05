@@ -31,9 +31,11 @@ combos=(
 	"mpi4py py314 mpi none"	
 	"numba py312 python none"
 	"pyomp py312 python none"	
+	"numpy py314t python viztracer"
+	"numpy py314 python viztracer"
 )
 
-profile=0 # 0 false --> performance experiment, 1 true --> profiling experiment
+profile=1 # 0 false --> performance experiment, 1 true --> profiling experiment
 
 nodes=1  # single node experiments
 

@@ -6,6 +6,7 @@ rm -rf py314t_sandbox
 singularity build --fakeroot --sandbox py314t_sandbox/ py314t.def
 
 # 2. Install mpi4py inside the container, using host's gompi
+module purge
 module load gompi/2024a
 singularity exec --writable py314t_sandbox \
     env CC=mpicc MPICC=mpicc \
