@@ -23,25 +23,31 @@ MATRICES_CONFIG = [
   # "wikipedia-20070206",
   "ljournal-2008"
 ]
-# benchmarks where there is a seq/mpi implementation
+# benchmarks with matrix input where there is a seq/mpi implementation
 SCRIPTS_WITH_MATRICES = [
   "connected_components",
 ]
-# benchmarks where the seq implementation is used as par, e.g. for cc, there is only one
+# benchmarks with matrix input where the seq implementation is used as par, e.g. for cc, there is only one
 SEQ_AS_PAR_SCRIPTS_WITH_MATRICES = [
   "connected_components"
 ]
-# benchmarks where there is a separate par implementation too
+# benchmarks with matrix input where there is a separate par implementation too
 PAR_SCRIPTS_WITH_MATRICES = [
 ]
 
-SCRIPTS_WITHOUT_MATRICES = [
-  "nbody"
+# benchmarks without matrix input where there is a seq/mpi implementation
+SCRIPTS = [
+  "mergesort",
+  # "pi_approx",
+  # "nbody", 
 ]
-SEQ_AS_PAR_SCRIPTS_WITHOUT_MATRICES = [
+# benchmarks without matrix input where the seq implementation is used as par, e.g. for mergesort, pi_approx
+SEQ_AS_PAR_SCRIPTS = [
 ]
-PAR_SCRIPTS_WITHOUT_MATRICES = [
-  "nbody"
+# benchmarks without matrix input where there is a separate par implementation too
+PAR_SCRIPTS = [
+  "mergesort",
+  # "pi_approx",
 ]
 
 TOTAL_ITERS = 5
@@ -52,7 +58,7 @@ NUM_THREADS_PAR = [1,2,4,8,16,32]
 NUM_THREADS_SEQ = [2,4,8,16,32]
 
 # MPI scaling over nodes
-MPI_SCALE_NB_NODES = [1,2,4,8,16,32]
+MPI_SCALE_NB_NODES = [1,2,4,8,16]
 
 MPI_LOCAL = {
   # total-mpi-procs, task-per-node, cpu-per-task
@@ -111,3 +117,38 @@ VICTIMS = [
   "SEQ",
   "SEQPRI"
 ]
+
+
+ARRAY_SIZE = 1_000_000
+THRESHOLD = 32
+NUM_INTERVALS = 500_000_000
+ARGUMENTS = {
+    "mergesort": {
+        "seq": {
+            "args": ["array_size", "threshold"],
+            "array_size": [ARRAY_SIZE],
+            "threshold": [THRESHOLD],
+        },
+        "par": {
+            "args": ["array_size", "threshold", "num_threads"],
+            "array_size": [ARRAY_SIZE],
+            "threshold": [THRESHOLD],
+        },
+        "mpi": {
+            "args": ["array_size", "threshold"],
+            "array_size": [ARRAY_SIZE],
+            "threshold": [THRESHOLD],
+        }        
+    },
+
+    "pi_approx": {
+        "seq": {
+            "args": ["num_intervals"],
+            "num_intervals": [NUM_INTERVALS],
+        },
+        "par": {
+            "args": ["num_intervals"],  # assumes par does NOT take num_threads
+            "num_intervals": [NUM_INTERVALS],
+        }
+    },
+}
