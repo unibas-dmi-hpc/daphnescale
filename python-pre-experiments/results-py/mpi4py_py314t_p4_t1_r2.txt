@@ -1,0 +1,10 @@
+mpi4py built against: ('Open MPI', (4, 1, 6))
+MPI library version: Open MPI v4.1.6, package: Open MPI modules@cvmfs.sling.si Distribution, ident: 4.1.6, repo rev: v4.1.6, Sep 30, 2023
+MPI standard version: (3, 1)
+Approximation of pi mpi4py with 500'000'000 intervals: 3.141592653589861
+Absolute error: 6.7945649107e-14  |  Relative error: 2.163e-14
+Detected 1 threads and 4 processes/ranks (total workers: 4)
+Time taken mpi4py: 27.890349 seconds
+---------------------------
+Experiment mpi4py with 3.14.0 free-threading build (main, Dec  5 2025, 11:29:37) [GCC 13.4.0] (GIL enabled: False) finsihed.
+===========================

@@ -1,0 +1,7 @@
+Approximation of pi numpy with 500'000'000 intervals: 3.1415926535897936
+Absolute error: 4.4408920985e-16  |  Relative error: 1.414e-16
+Detected 1 threads and 1 processes/ranks (total workers: 1)
+Time taken numpy: 5.077541 seconds
+---------------------------
+Experiment numpy with 3.14.0 free-threading build (main, Dec  5 2025, 11:29:37) [GCC 13.4.0] (GIL enabled: False) finsihed.
+===========================
