@@ -6,10 +6,10 @@ DAPHNE_DOCKER_TAG = "2025-03-12_X86-64_BASE_ubuntu24.04"
 JUPYCPP_DOCKER_TAG = "july25"
 
 LANGUAGES = [
-  "cpp",
   "py",
-  # "daph",
-  "jl"
+  "jl",
+  "cpp",
+  #"daph"
 ]
 
 MATRICES = [
@@ -120,7 +120,7 @@ VICTIMS = [
 ]
 
 
-ARRAY_SIZE = 100_000
+ARRAY_SIZE = 1_000_000
 THRESHOLD = 32
 NUM_INTERVALS = 500_000_000
 ARGUMENTS = {
