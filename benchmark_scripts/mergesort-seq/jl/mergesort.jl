@@ -72,7 +72,7 @@ function sort!(arr, threshold)
 end
 
 # Main
-if abspath(PROGRAM_FILE) == @__FILE__
+function main()
     if length(ARGS) != 2
         println("Usage: julia mergesort.jl SIZE THRESHOLD")
         exit(1)
@@ -101,3 +101,5 @@ if abspath(PROGRAM_FILE) == @__FILE__
 
     println("$(duration_ete),$(duration_sort),$(c)")
 end
+
+main()

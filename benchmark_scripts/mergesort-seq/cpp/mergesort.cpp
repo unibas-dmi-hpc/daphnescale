@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
     // Correctness check: H = Sum^{N-1}_{i=0} (i * arr[i}) <=> H = N(N-1)(N+1)/3
     long long H = 0;
     for (int i = 0; i < N; ++i) {
-        H += i * arr[i];
+        H += 1LL * i * arr[i];
     }
     double c = (double)H / ((double)N * N * N);// To avoid printing large numbers
 
