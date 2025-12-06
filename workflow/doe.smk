@@ -8,7 +8,7 @@ JUPYCPP_DOCKER_TAG = "july25"
 LANGUAGES = [
   "cpp",
   "py",
-  "daph",
+  # "daph",
   "jl"
 ]
 
@@ -50,7 +50,8 @@ PAR_SCRIPTS = [
   # "pi_approx",
 ]
 
-TOTAL_ITERS = 5
+# TOTAL_ITERS = 5
+TOTAL_ITERS = 1
 ITERATIONS = range(1, TOTAL_ITERS + 1)
 
 # Threading experiments
@@ -119,7 +120,7 @@ VICTIMS = [
 ]
 
 
-ARRAY_SIZE = 1_000_000
+ARRAY_SIZE = 100_000
 THRESHOLD = 32
 NUM_INTERVALS = 500_000_000
 ARGUMENTS = {
