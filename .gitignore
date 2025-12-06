@@ -24,6 +24,9 @@ python-pre-experiments/results-py/profiling/
 smake/
 # compiled cpp files
 benchmark_scripts/connected_components-*/cpp/connected_components_*
+benchmark_scripts/mergesort-*/cpp/mergesort_*
+benchmark_scripts/nbody-*/cpp/nbody_*
+benchmark_scripts/pi_approx-*/cpp/pi_approx_*
 .snakemake/
 slurm_out/
 # collect_environment*
