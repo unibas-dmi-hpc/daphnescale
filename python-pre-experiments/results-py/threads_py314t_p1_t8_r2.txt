@@ -1,0 +1,7 @@
+Approximation of pi threads with 500'000'000 intervals: 3.1415926535899676
+Absolute error: 1.7452705947e-13  |  Relative error: 5.555e-14
+Detected 8 threads and 1 processes/ranks (total workers: 8)
+Time taken threads: 13.576444 seconds
+---------------------------
+Experiment threads with 3.14.0 free-threading build (main, Dec  5 2025, 11:29:37) [GCC 13.4.0] (GIL enabled: False) finsihed.
+===========================
