@@ -95,6 +95,45 @@ def pi_numpy(n: int) -> float:
 
     return pi, (n_task, n_cpu, n_task * n_cpu)
 
+def pi_threads(n: int) -> float:
+    """
+    Computes an approximation of pi using the midpoint rule with threading.
+    - Results are returned in order and all at once.
+    - Workload distribution with manual chunking.
+
+    Args:
+        n (int): Number of subintervals.
+
+    Returns:
+        float: Approximation of pi.
+    """
+    th = importlib.import_module("threading")
+
+    n_cpu = get_slurm_resources().get('SLURM_CPUS_PER_TASK')
+    n_task = get_slurm_resources().get('SLURM_NTASKS_PER_NODE')
+    chunk = compute_chunksize(n, n_cpu)
+    w = 1.0 / n                             # step width
+
+    # Build only the chunk starting indices
+    starts = range(0, n, chunk)
+    results = [0.0] * len(starts)           # preallocate results list
+
+    def thread_worker(index, start, chunk, n):
+        results[index] = worker_sum((start, chunk, n))
+
+    threads = []
+    for idx, start in enumerate(starts):
+        t = th.Thread(target=thread_worker, args=(idx, start, chunk, n))
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
+
+    pi = math.fsum(results) * w
+    return pi, (n_cpu, n_task, n_task * n_cpu)
+
+
 def pi_mp_threads(n: int) -> float:
     """
     Computes an approximation of pi using the midpoint rule with multiprocessing but with threads.
@@ -114,7 +153,6 @@ def pi_mp_threads(n: int) -> float:
     Returns:
         float: Approximation of pi.
     """
-    mp = importlib.import_module("multiprocessing")
     # Explicitly import ThreadPool (not exposed at top level in newer Python)
     ThreadPool = importlib.import_module("multiprocessing.pool").ThreadPool
 
@@ -482,6 +520,7 @@ WAYS = {
     'omp4py-guided': pi_omp4py_guided,
     'omp4py-dynamic': pi_omp4py_dynamic,
     'mpi4py': pi_mpi4py,
+    'threads': pi_threads
 }
 
 def experiments(n: int, way: str):
