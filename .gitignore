@@ -14,7 +14,7 @@ daphne-src/
 #results/connected_components/
 results/nbody/
 results/mergesort/
-results/pi-approx/
+results/pi_approx/
 # python-pre-experiments/results-py
 
 # profiling results tooo large to commit.
