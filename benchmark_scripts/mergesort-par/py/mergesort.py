@@ -2,6 +2,7 @@ import math
 import sys
 import time
 import threading 
+import os
 
 # Insertion sort for small arrays (right exclusive) --> the leaves of merge sort
 def insertion_sort(arr, left, right):
@@ -79,8 +80,8 @@ def merge_sort_parallel(arr, left, right, tmp, threshold, max_depth, depth):
         left_thread.join()
         right_thread.join()
     else:
-        merge_sort_parallel(arr, left, mid, tmp, threshold, max_depth, depth)
-        merge_sort_parallel(arr, mid, right, tmp, threshold, max_depth, depth)
+        merge_sort(arr, left, mid, tmp, threshold)
+        merge_sort(arr, mid, right, tmp, threshold)
 
     merge(arr, left, mid, right, tmp)
 
@@ -106,9 +107,11 @@ if __name__ == "__main__":
     start_gen = time.time()
     arr = [N - i for i in range(N)]
 
+    cpu_before = os.times().user
     start_sort = time.time()
     sort(arr, threshold, workers)
     end = time.time()
+    cpu_after = os.times().user
 
     # Correctness check: H = Sum^{N-1}_{i=0} (i * arr[i}) <=> H = N(N-1)(N+1)/3
     H = 0
@@ -121,3 +124,11 @@ if __name__ == "__main__":
 
     print(f'{duration_ete},{duration_sort},{c:.16f}')
     #print(f'Version {sys.version},GIL enabled: {sys._is_gil_enabled()}')
+
+    cpu_used = cpu_after - cpu_before
+    wall_used = end - start_sort
+    ratio = cpu_used / wall_used if wall_used > 0 else float('nan')
+
+    print(f"CPU time used: {cpu_used:.4f} sec")
+    print(f"Wall time:     {wall_used:.4f} sec")
+    print(f"CPU/Wall ratio: {ratio:.2f}  (parallelism indicator)")
