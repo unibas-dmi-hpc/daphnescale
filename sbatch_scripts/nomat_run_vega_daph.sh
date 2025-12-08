@@ -21,6 +21,19 @@ RESULT=$3
 shift 3
 ARGS="$@"
 
+# build args string
+ARG_STRING=""
+i=0
+for a in "${ARGS[@]}"; do
+  key=$(printf "%s\n" n p q r s t u v w x y z | sed -n "$((i+1))p")
+  if [ -z "${ARG_STRING}" ]; then
+     ARG_STRING="${key}=${a}"
+  else
+     ARG_STRING="${ARG_STRING}, ${key}=${a}"
+  fi
+  i=$((i+1))
+done
+
 mkdir -p "$(dirname "${SLURM_SUBMIT_DIR}/${RESULT}")"
 
 OPTIONS=""
@@ -33,8 +46,8 @@ fi
 
 srun --mpi=none  --cpus-per-task=${NUM_THREADS} singularity exec --no-mount /cvmfs ${SLURM_SUBMIT_DIR}/daphne-dev.sif ./daphne-src/bin/daphne \
 					            --select-matrix-repr \
-                      ${OPTIONS} \
-					            --args f=\"${SLURM_SUBMIT_DIR}/${MATRIX_PATH}\"\
+                      			${OPTIONS} \
+					            --args "${ARG_STRING}" \
 					            ${SLURM_SUBMIT_DIR}/${SCRIPT} &> ${SLURM_SUBMIT_DIR}/${RESULT}
 
 exit 0
