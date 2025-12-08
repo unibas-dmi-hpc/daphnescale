@@ -9,7 +9,7 @@ LANGUAGES = [
   "py",
   "jl",
   "cpp",
-  #"daph"
+  "daph"
 ]
 
 MATRICES = [
@@ -37,17 +37,19 @@ PAR_SCRIPTS_WITH_MATRICES = [
 
 # benchmarks without matrix input where there is a seq/mpi implementation
 SCRIPTS = [
-  "mergesort",
-  # "pi_approx",
+  # "quicksort",
+  "pi_approx",
   # "nbody", 
+  # "mergesort",
 ]
 # benchmarks without matrix input where the seq implementation is used as par, e.g. for mergesort, pi_approx
 SEQ_AS_PAR_SCRIPTS = [
 ]
 # benchmarks without matrix input where there is a separate par implementation too
 PAR_SCRIPTS = [
-  "mergesort",
-  # "pi_approx",
+  # "quicksort",
+  "pi_approx",
+  # "mergesort",
 ]
 
 # TOTAL_ITERS = 5
@@ -119,10 +121,23 @@ VICTIMS = [
   "SEQPRI"
 ]
 
-
+# Sort arguments
 ARRAY_SIZE = 1_000_000
 THRESHOLD = 32
-NUM_INTERVALS = 500_000_000
+
+# QS arguments
+import math
+MAX_THREADS = max(NUM_THREADS_PAR)
+MAX_DEPTH = math.floor(math.log2(MAX_THREADS))
+QS_INPUT = f"arrays/quicksort_input_N{ARRAY_SIZE}_d{MAX_DEPTH}.dat"
+
+# Pi Approx Arguments
+NUM_INTERVALS = 10_000_000
+
+INPUT_DATA = {
+    "quicksort": QS_INPUT,
+}
+
 ARGUMENTS = {
     "mergesort": {
         "seq": {
@@ -141,14 +156,30 @@ ARGUMENTS = {
             "threshold": [THRESHOLD],
         }        
     },
-
+    "quicksort": {
+        "seq": {
+            "args": ["data","threshold"],
+            "data": [QS_INPUT],
+            "threshold": [THRESHOLD],
+        },
+        "par": {
+            "args": ["data","threshold", "num_threads"],
+            "data": [QS_INPUT],
+            "threshold": [THRESHOLD],
+        },
+        "mpi": {
+            "args": ["data","threshold"],
+            "data": [QS_INPUT],
+            "threshold": [THRESHOLD],
+        }        
+    },    
     "pi_approx": {
         "seq": {
             "args": ["num_intervals"],
             "num_intervals": [NUM_INTERVALS],
         },
         "par": {
-            "args": ["num_intervals"],  # assumes par does NOT take num_threads
+            "args": ["num_intervals", "num_threads"],  # assumes par does NOT take num_threads
             "num_intervals": [NUM_INTERVALS],
         }
     },
