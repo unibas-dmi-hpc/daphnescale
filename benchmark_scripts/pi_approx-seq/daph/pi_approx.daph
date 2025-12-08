@@ -1,0 +1,19 @@
+def approx_pi(num_intervals: si64) -> f64 {
+    pi = 0.0:
+    w = 1.0 / num_intervals:
+    for (i in 0:N) {
+        local = (i + 0.5) * w:
+        pi = pi + 4.0 / (1.0 + local * local):
+    }
+    return pi * w:
+}
+
+start_data = now();
+num_intervals = $n;
+
+start_compute=now();
+pi = approx_pi(num_intervals):
+end = now();
+duration_ete = (end - start_data) / 1000000000.0;
+duration_compute = (end - start_compute) / 1000000000.0;
+print(duration_ete, 0); print(",",0); print(duration_compute, 0); print(",",0); print(pi);
