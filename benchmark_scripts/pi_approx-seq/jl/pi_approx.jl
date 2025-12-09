@@ -19,13 +19,13 @@ function main()
     num_intervals = parse(Int, ARGS[1])
 
     start_compute = time_ns()
-    sort!(arr, threshold, workers)
+    pi = approx_pi(num_intervals)
     stop_time =time_ns()
 
     duration_ete = (stop_time - start_data) * 1e-9
     duration_compute = (stop_time - start_compute) * 1e-9
 
-    println("$(duration_ete),$(duration_compute),$(c)")
+    println("$(duration_ete),$(duration_compute),$(pi)")
 end
 
 main()
