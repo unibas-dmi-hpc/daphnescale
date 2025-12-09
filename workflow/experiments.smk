@@ -12,20 +12,20 @@ rule all:
       lang=LANGUAGES,\
       num_threads=[1],\
       iter=ITERATIONS),
-    # expand("results/{benchmark}/{form}/{lang}/{num_threads}/{iter}.dat",\
-    #   benchmark=SEQ_AS_PAR_SCRIPTS,\
-    #   form=["par"],\
-    #   lang=LANGUAGES,\
-    #   num_threads=NUM_THREADS_SEQ,\
-    #   # num_threads=[8],\
-    #   iter=ITERATIONS),
-    # expand("results/{benchmark}/{form}/{lang}/{num_threads}/{iter}.dat",\
-    #   benchmark=PAR_SCRIPTS,\
-    #   form=["par"],\
-    #   lang=LANGUAGES,\
-    #   num_threads=NUM_THREADS_PAR,\
-    #   # num_threads=[8],\
-    #   iter=ITERATIONS)
+    expand("results/{benchmark}/{form}/{lang}/{num_threads}/{iter}.dat",\
+      benchmark=SEQ_AS_PAR_SCRIPTS,\
+      form=["par"],\
+      lang=LANGUAGES,\
+      # num_threads=NUM_THREADS_SEQ,\
+      num_threads=[8],\
+      iter=ITERATIONS),
+    expand("results/{benchmark}/{form}/{lang}/{num_threads}/{iter}.dat",\
+      benchmark=PAR_SCRIPTS,\
+      form=["par"],\
+      lang=LANGUAGES,\
+      # num_threads=NUM_THREADS_PAR,\
+      num_threads=[8],\
+      iter=ITERATIONS)
 
 # RULE SEQUENTIAL EXPERIMENT 
 rule run_expe_seq:

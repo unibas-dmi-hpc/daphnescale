@@ -158,17 +158,17 @@ ARGUMENTS = {
     },
     "quicksort": {
         "seq": {
-            "args": ["data","threshold"],
+            "args": ["data", "threshold"],
             "data": [QS_INPUT],
             "threshold": [THRESHOLD],
         },
         "par": {
-            "args": ["data","threshold", "num_threads"],
+            "args": ["data", "threshold", "num_threads"],
             "data": [QS_INPUT],
             "threshold": [THRESHOLD],
         },
         "mpi": {
-            "args": ["data","threshold"],
+            "args": ["data", "threshold"],
             "data": [QS_INPUT],
             "threshold": [THRESHOLD],
         }        
@@ -179,8 +179,12 @@ ARGUMENTS = {
             "num_intervals": [NUM_INTERVALS],
         },
         "par": {
-            "args": ["num_intervals", "num_threads"],  # assumes par does NOT take num_threads
+            "args": ["num_intervals", "num_threads"],
             "num_intervals": [NUM_INTERVALS],
         }
+        "mpi": {
+            "args": ["num_intervals"],
+            "num_intervals": [NUM_INTERVALS],
+        },        
     },
 }

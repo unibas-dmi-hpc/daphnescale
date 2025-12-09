@@ -19,20 +19,19 @@ SCRIPT=$2
 RESULT=$3
 # All remaining arguments are benchmark-specific
 shift 3
-ARGS="$@"
+# Convert "$@" into an array ARGS[]
+read -r -a ARGS <<< "$@"
 
 # build args string
+keys=(n p q r s t u v w x y z)
 ARG_STRING=""
-i=0
-for a in "${ARGS[@]}"; do
-  key=$(printf "%s\n" n p q r s t u v w x y z | sed -n "$((i+1))p")
-  if [ -z "${ARG_STRING}" ]; then
-     ARG_STRING="${key}=${a}"
-  else
-     ARG_STRING="${ARG_STRING}, ${key}=${a}"
-  fi
-  i=$((i+1))
+for i in "${!ARGS[@]}"; do
+    key="${keys[$i]}"
+    value="${ARGS[$i]}"
+    ARG_STRING+="${key}=${value} "
 done
+# trim trailing space
+ARG_STRING="${ARG_STRING%" "}"
 
 mkdir -p "$(dirname "${SLURM_SUBMIT_DIR}/${RESULT}")"
 
@@ -43,11 +42,10 @@ then
   OPTIONS="--vec --num-threads=${NUM_THREADS} --partitioning=${PARTITIONING} --queue_layout=${QUEUE_LAYOUT} --victim_selection=${VICTIM_SELECTION} --pin-workers"
 fi
 
-
 srun --mpi=none  --cpus-per-task=${NUM_THREADS} singularity exec --no-mount /cvmfs ${SLURM_SUBMIT_DIR}/daphne-dev.sif ./daphne-src/bin/daphne \
 					            --select-matrix-repr \
-                      			${OPTIONS} \
-					            --args "${ARG_STRING}" \
-					            ${SLURM_SUBMIT_DIR}/${SCRIPT} &> ${SLURM_SUBMIT_DIR}/${RESULT}
+                      ${OPTIONS} \
+					            ${SLURM_SUBMIT_DIR}/${SCRIPT} ${ARG_STRING} \
+                      &> ${SLURM_SUBMIT_DIR}/${RESULT}
 
 exit 0
