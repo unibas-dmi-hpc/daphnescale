@@ -1,6 +1,5 @@
 import sys
 import time
-import math # for better floating point sum accuracy
 from mpi4py import MPI
 
 comm = MPI.COMM_WORLD
