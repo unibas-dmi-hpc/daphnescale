@@ -5,8 +5,8 @@
 #include <mpi.h>
 
 long long compute_chunksize(long long n, int num_workers) {
-    long long chunk = n / num_threads;
-    if (n % num_threads != 0)
+    long long chunk = n / num_workers;
+    if (n % num_workers != 0)
         chunk += 1;
     return chunk;
 }
