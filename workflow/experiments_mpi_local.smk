@@ -5,7 +5,7 @@ rule all:
     expand("results/{benchmark}/{form}/{lang}/{mpi_procs}/{iter}.dat",\
       benchmark=SCRIPTS,\
       form=["mpi_local"],\
-      lang=["cpp","py","jl"],\
+      lang=["py","jl","cpp"],\
       mpi_procs=MPI_LOCAL.keys(),\
       iter=ITERATIONS),
     expand("results/{benchmark}/{form}/daph/{scheme}-{layout}-{victim}/{mpi_procs}/{iter}.dat",\

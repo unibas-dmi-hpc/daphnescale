@@ -37,17 +37,15 @@ PAR_SCRIPTS_WITH_MATRICES = [
 
 # benchmarks without matrix input where there is a seq/mpi implementation
 SCRIPTS = [
-  # "quicksort",
   "pi_approx",
   # "nbody", 
   # "mergesort",
 ]
-# benchmarks without matrix input where the seq implementation is used as par, e.g. for mergesort, pi_approx
+# benchmarks without matrix input where the seq implementation is used as par, always true for daphne
 SEQ_AS_PAR_SCRIPTS = [
 ]
 # benchmarks without matrix input where there is a separate par implementation too
 PAR_SCRIPTS = [
-  # "quicksort",
   "pi_approx",
   # "mergesort",
 ]
