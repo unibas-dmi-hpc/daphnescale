@@ -9,12 +9,26 @@ set -ex
 
 NUM_THREADS=$1
 SCRIPT=$2
-MATRIX_PATH=$3
-MATRIX_SIZE=$4 # unsued but kept to have the same api as for the other sbatch scripts
-PARTITIONING=$5
-QUEUE_LAYOUT=$6
-VICTIM_SELECTION=$7
-RESULT=$8
+PARTITIONING=$3
+QUEUE_LAYOUT=$4
+VICTIM_SELECTION=$5
+RESULT=$6
+# All remaining arguments are benchmark-specific
+shift 6
+ARGS="$@"
+# Convert "$@" into an array ARGS[]
+read -r -a ARGS <<< "$@"
+
+# build args string
+keys=(n p q r s t u v w x y z)
+ARG_STRING=""
+for i in "${!ARGS[@]}"; do
+    key="${keys[$i]}"
+    value="${ARGS[$i]}"
+    ARG_STRING+="${key}=${value} "
+done
+# trim trailing space
+ARG_STRING="${ARG_STRING%" "}"
 
 mkdir -p "$(dirname "${SLURM_SUBMIT_DIR}/${RESULT}")"
 
@@ -32,22 +46,6 @@ srun --mpi=pmix --cpus-per-task=${NUM_THREADS} singularity exec ${SLURM_SUBMIT_D
 			--partitioning=${PARTITIONING} \
 			--queue_layout=${QUEUE_LAYOUT} \
 			--victim_selection=${VICTIM_SELECTION} \
-			--args f=\"${SLURM_SUBMIT_DIR}/${MATRIX_PATH}\" \
-            ${SLURM_SUBMIT_DIR}/${SCRIPT} &> ${SLURM_SUBMIT_DIR}/${RESULT}
-
-
-
-# srun --mpi=pmix --cpus-per-task=${NUM_THREADS} singularity exec --no-mount /cvmfs ${SLURM_SUBMIT_DIR}/daphne.sif daphne \
-#             --vec \
-# 			--distributed \
-# 			--num-threads=${NUM_THREADS} \
-# 			--dist_backend=MPI \
-# 			--select-matrix-repr \
-# 			--pin-workers \
-# 			--partitioning=${PARTITIONING} \
-# 			--queue_layout=${QUEUE_LAYOUT} \
-# 			--victim_selection=${VICTIM_SELECTION} \
-# 			-- args f=\"${SLURM_SUBMIT_DIR}/${MATRIX_PATH}\" \
-#             ${SLURM_SUBMIT_DIR}/${SCRIPT} &> ${SLURM_SUBMIT_DIR}/${RESULT}
+            ${SLURM_SUBMIT_DIR}/${SCRIPT} ${ARG_STRING} &> ${SLURM_SUBMIT_DIR}/${RESULT}
 
 exit 0

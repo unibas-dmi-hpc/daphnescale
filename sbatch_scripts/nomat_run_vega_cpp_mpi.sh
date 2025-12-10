@@ -7,11 +7,13 @@
 
 set -ex
 
+# Required fixed arguments
 NUM_THREADS=$1
 SOURCEFILE=$2
-MATRIX_PATH=$3
-MATRIX_SIZE=$4
-RESULT=$5
+RESULT=$3
+# All remaining arguments are benchmark-specific
+shift 3
+ARGS="$@"
 
 mkdir -p "$(dirname "${SLURM_SUBMIT_DIR}/${RESULT}")"
 
@@ -34,6 +36,6 @@ export PMIX_MCA_gds="hash"
 
 singularity exec --no-mount /cvmfs ${SLURM_SUBMIT_DIR}/jupycpp.sif mpic++ ${SLURM_SUBMIT_DIR}/${SOURCEFILE} -o ${SLURM_SUBMIT_DIR}/${EXECUTABLE} ${OPTIONS}
 
-OMP_NUM_THREADS=${NUM_THREADS} srun --mpi=pmix --cpus-per-task=${NUM_THREADS} singularity exec ${SLURM_SUBMIT_DIR}/jupycpp.sif ${SLURM_SUBMIT_DIR}/${EXECUTABLE} ${SLURM_SUBMIT_DIR}/${MATRIX_PATH} ${MATRIX_SIZE} > ${SLURM_SUBMIT_DIR}/${RESULT}
+OMP_NUM_THREADS=${NUM_THREADS} srun --mpi=pmix --cpus-per-task=${NUM_THREADS} singularity exec ${SLURM_SUBMIT_DIR}/jupycpp.sif ${SLURM_SUBMIT_DIR}/${EXECUTABLE} ${ARGS} > ${SLURM_SUBMIT_DIR}/${RESULT}
 
 exit 0

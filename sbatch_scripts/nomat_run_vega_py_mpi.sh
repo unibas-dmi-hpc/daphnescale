@@ -7,11 +7,13 @@
 
 set -ex
 
+# Required fixed arguments
 NUM_THREADS=$1
 SCRIPT=$2
-MATRIX_PATH=$3
-MATRIX_SIZE=$4 # unsued but kept to have the same api as for the other sbatch scripts
-RESULT=$5
+RESULT=$3
+# All remaining arguments are benchmark-specific
+shift 3
+ARGS="$@"
 
 mkdir -p "$(dirname "${SLURM_SUBMIT_DIR}/${RESULT}")"
 
@@ -40,6 +42,6 @@ export MKL_NUM_THREADS=${NUM_THREADS}
 export VECLIB_MAXIMUM_THREADS=${NUM_THREADS}
 export NUMEXPR_NUM_THREADS=${NUM_THREADS}
 
-srun --mpi=pmix --cpus-per-task=${NUM_THREADS} singularity exec -B /cvmfs:/cvmfs ${SLURM_SUBMIT_DIR}/py314t.sif python3 ${SLURM_SUBMIT_DIR}/${SCRIPT} ${SLURM_SUBMIT_DIR}/${MATRIX_PATH} > ${SLURM_SUBMIT_DIR}/${RESULT}
+srun --mpi=pmix --cpus-per-task=${NUM_THREADS} singularity exec -B /cvmfs:/cvmfs ${SLURM_SUBMIT_DIR}/py314t.sif python3 ${SLURM_SUBMIT_DIR}/${SCRIPT} ${ARGS} > ${SLURM_SUBMIT_DIR}/${RESULT}
 
 exit 0
