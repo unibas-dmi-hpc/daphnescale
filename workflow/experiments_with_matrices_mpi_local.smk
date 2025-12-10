@@ -1,8 +1,6 @@
 include: "doe.smk"
 include: "matrices.smk"
 
-"results/{benchmark}/par/{lang}/{num_threads}/{iter}.dat"
-
 rule all:
   input:
     expand("results/{benchmark}/{matrix}/mpi_local/{lang}/{mpi_procs}/{iter}.dat",\

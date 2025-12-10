@@ -52,8 +52,8 @@ PAR_SCRIPTS = [
   # "mergesort",
 ]
 
-# TOTAL_ITERS = 5
-TOTAL_ITERS = 1
+TOTAL_ITERS = 5
+# TOTAL_ITERS = 1
 ITERATIONS = range(1, TOTAL_ITERS + 1)
 
 # Threading experiments
@@ -62,6 +62,7 @@ NUM_THREADS_SEQ = [2,4,8,16,32]
 
 # MPI scaling over nodes
 MPI_SCALE_NB_NODES = [1,2,4,8,16]
+# MPI_SCALE_NB_NODES = [4]
 
 MPI_LOCAL = {
   # total-mpi-procs, task-per-node, cpu-per-task
@@ -132,7 +133,7 @@ MAX_DEPTH = math.floor(math.log2(MAX_THREADS))
 QS_INPUT = f"arrays/quicksort_input_N{ARRAY_SIZE}_d{MAX_DEPTH}.dat"
 
 # Pi Approx Arguments
-NUM_INTERVALS = 10_000_000
+NUM_INTERVALS = 500_000_000
 
 INPUT_DATA = {
     "quicksort": QS_INPUT,
@@ -150,11 +151,16 @@ ARGUMENTS = {
             "array_size": [ARRAY_SIZE],
             "threshold": [THRESHOLD],
         },
-        "mpi": {
+        "mpi_local": {
             "args": ["array_size", "threshold"],
             "array_size": [ARRAY_SIZE],
             "threshold": [THRESHOLD],
-        }        
+        },
+        "mpi_scale": {
+            "args": ["array_size", "threshold"],
+            "array_size": [ARRAY_SIZE],
+            "threshold": [THRESHOLD],
+        }                   
     },
     "quicksort": {
         "seq": {
@@ -181,10 +187,14 @@ ARGUMENTS = {
         "par": {
             "args": ["num_intervals", "num_threads"],
             "num_intervals": [NUM_INTERVALS],
-        }
-        "mpi": {
-            "args": ["num_intervals"],
+        },
+        "mpi_local": {
+            "args": ["num_intervals"], # no num_workers for mpi as comm.Get_size() is used
             "num_intervals": [NUM_INTERVALS],
-        },        
+        },  
+        "mpi_scale": {
+            "args": ["num_intervals"], # no num_workers for mpi as comm.Get_size() is used
+            "num_intervals": [NUM_INTERVALS],
+        },                
     },
 }
