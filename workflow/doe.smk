@@ -9,7 +9,7 @@ LANGUAGES = [
   "py",
   "jl",
   "cpp",
-  "daph"
+  # "daph"
 ]
 
 MATRICES = [
@@ -38,8 +38,8 @@ PAR_SCRIPTS_WITH_MATRICES = [
 # benchmarks without matrix input where there is a seq/mpi implementation
 SCRIPTS = [
   "pi_approx",
-  # "nbody", 
-  # "mergesort",
+  "mergesort",
+  # "nbody",   
 ]
 # benchmarks without matrix input where the seq implementation is used as par, always true for daphne
 SEQ_AS_PAR_SCRIPTS = [
@@ -47,7 +47,7 @@ SEQ_AS_PAR_SCRIPTS = [
 # benchmarks without matrix input where there is a separate par implementation too
 PAR_SCRIPTS = [
   "pi_approx",
-  # "mergesort",
+  "mergesort",
 ]
 
 TOTAL_ITERS = 5
@@ -159,24 +159,7 @@ ARGUMENTS = {
             "array_size": [ARRAY_SIZE],
             "threshold": [THRESHOLD],
         }                   
-    },
-    "quicksort": {
-        "seq": {
-            "args": ["data", "threshold"],
-            "data": [QS_INPUT],
-            "threshold": [THRESHOLD],
-        },
-        "par": {
-            "args": ["data", "threshold", "num_threads"],
-            "data": [QS_INPUT],
-            "threshold": [THRESHOLD],
-        },
-        "mpi": {
-            "args": ["data", "threshold"],
-            "data": [QS_INPUT],
-            "threshold": [THRESHOLD],
-        }        
-    },    
+    }, 
     "pi_approx": {
         "seq": {
             "args": ["num_intervals"],

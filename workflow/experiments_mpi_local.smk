@@ -8,14 +8,14 @@ rule all:
       lang=["py","jl","cpp"],\
       mpi_procs=MPI_LOCAL.keys(),\
       iter=ITERATIONS),
-    expand("results/{benchmark}/{form}/daph/{scheme}-{layout}-{victim}/{mpi_procs}/{iter}.dat",\
-      benchmark=SCRIPTS,\
-      form=["mpi_local"],\
-      mpi_procs=MPI_LOCAL.keys(),\
-      scheme=["static"],\
-      layout=["centralized"],\
-      victim=["seq"],\
-      iter=ITERATIONS),    
+    # expand("results/{benchmark}/{form}/daph/{scheme}-{layout}-{victim}/{mpi_procs}/{iter}.dat",\
+    #   benchmark=SCRIPTS,\
+    #   form=["mpi_local"],\
+    #   mpi_procs=MPI_LOCAL.keys(),\
+    #   scheme=["static"],\
+    #   layout=["centralized"],\
+    #   victim=["seq"],\
+    #   iter=ITERATIONS),    
 
 rule run_expe_mpi_jupycpp:
   input:
