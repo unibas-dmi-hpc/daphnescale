@@ -15,7 +15,7 @@ mkdir -p "$slurm_log_path"
 # and building scoreP inside the container was not possible due to missing build tools and libraries	
 combos=( 	
 	# "seq py314t seq none"
-	# "mp-threads py314t python viztracer"
+	"mp-threads py314t python viztracer"
 	# "mp-map py314t python viztracer"
 	# "mp-imap py314t python viztracer"
 	# "mp-imap-unordered py314t python viztracer"  
@@ -23,16 +23,16 @@ combos=(
 	# "omp4py-dynamic py314t omp none"
 	# "omp4py-guided py314t omp none"
 	# "mpi4py py314t mpi none"
-	# "numpy py314t python viztracer"
+	"numpy py314t python viztracer"
 	# "seq py314 seq none"
-	# "mp-threads py314 python viztracer"
+	"mp-threads py314 python viztracer"
 	# "mp-map py314 python viztracer"
 	# "mp-imap py314 python viztracer"
 	# "mp-imap-unordered py314 python viztracer"  
 	# "mpi4py py314 mpi none"	
 	# "numba py312 python none"
 	# "pyomp py312 python none"	
-	# "numpy py314 python viztracer"
+	"numpy py314 python viztracer"
 	"threads py314t python viztracer"
 	"threads py314 python viztracer"
 )
@@ -45,7 +45,7 @@ nodes=1  # single node experiments
 if (( profile == 1 )); then
     res_path="${base_res_path}profiling/"
     mkdir -p "$res_path"
-	n=10000 # number of intervals in the numerical integral summation
+	n=1_000_000 # number of intervals in the numerical integral summation
 	job_time="0-00:10:00"
     profiler="none"
 	repetitions=1	
