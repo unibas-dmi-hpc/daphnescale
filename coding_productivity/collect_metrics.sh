@@ -6,6 +6,12 @@
 entries=(
     "connected_components-seq:connected_components:cc:seq"   
     "connected_components-mpi:connected_components:cc:mpi"   
+    # "pi_approx-seq:pi_approx:pi:seq"   
+    # "pi_approx-par:pi_approx:pi:par"   
+    # "pi_approx-mpi:pi_approx:pi:mpi"
+    # "mergesort-seq:mergesort:ms:seq"
+    # "mergesort-par:mergesort:ms:par"
+    # "mergesort-mpi:mergesort:ms:mpi"
 )
 langs=("py" "jl" "cpp" "daph")
 indir="../../../benchmark_scripts"
