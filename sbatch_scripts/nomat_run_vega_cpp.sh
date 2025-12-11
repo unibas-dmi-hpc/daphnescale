@@ -25,13 +25,11 @@ CFLAGS=$(PKG_CONFIG_PATH=/share/pkgconfig singularity exec --no-mount /cvmfs ${S
 
 OPTIONS=""
 
-if [ "${NUM_THREADS}" -gt "1" ]
-then
+if [[ "$RESULT" == *"/par/"* ]]; then
   OPTIONS="${CFLAGS} -O3 -fopenmp"
 else
   OPTIONS="${CFLAGS} -O3 -DEIGEN_DONT_PARALLELIZE"
 fi
-
 
 singularity exec --no-mount /cvmfs ${SLURM_SUBMIT_DIR}/jupycpp.sif g++ ${SLURM_SUBMIT_DIR}/${SOURCEFILE} -o ${SLURM_SUBMIT_DIR}/${EXECUTABLE} ${OPTIONS}
 
