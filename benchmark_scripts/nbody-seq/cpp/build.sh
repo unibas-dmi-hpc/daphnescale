@@ -1,2 +1,2 @@
 set -xe
-g++ nbody-seq.cpp -o nbody-seq -lm -O3
+g++ nbody.cpp -o nbody -lm -O3

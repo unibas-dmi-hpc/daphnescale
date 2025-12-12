@@ -1,214 +1,170 @@
 #include <iostream>
-#include <Eigen/Dense>
-#include <Eigen/Core>
+#include <cmath>
+#include <vector>
 #include <chrono>
-#include "mpi.h"
-#include <omp.h>
+#include <mpi.h>
+#include <iomanip>
 
-void add_with_scale(Eigen::MatrixXd A, Eigen::MatrixXd B, double alpha, int rank, int numprocs, int size, MPI_Datatype line_type);
+#define DELTA_TIME 1.0
+#define CONST_G 1.0
 
-Eigen::MatrixXd compute_distances(Eigen::VectorXd V, int rank, int numprocs, int size) {
-  // 1. scatter the data of V.data
-  int sub_size = size / numprocs;
-  if (rank != 0) {
-    Eigen::VectorXd V(size);
-  }
-  MPI_Bcast(V.data(), size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  Eigen::VectorXd subV(sub_size);
-  MPI_Scatter(V.data(), sub_size, MPI_DOUBLE, subV.data(), sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  
-  // 2. perform ones * V.tranpose()
-  Eigen::MatrixXd sub_dv = Eigen::MatrixXd::Zero(size, sub_size);
-  sub_dv.rowwise() += subV.transpose();
-  sub_dv.colwise() -= V;
+class Particle {
+    public:
+        double mass;
+        double posx;
+        double posy;
+        double velx;
+        double vely;
+        double accx;
+        double accy;
 
-  // 3. send back the sub matrix
-  Eigen::MatrixXd dv(size, size);
-  MPI_Gather(sub_dv.data(), size * sub_size, MPI_DOUBLE, dv.data(), size * sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+        double distance(Particle other);
+        void update_position();
+        void update_velocity();
+        void update_acceleration(Particle other);
+        void reset_force();
 
-  return dv;
+        Particle(double m, double x, double y, double vx, double vy, double ax, double ay) {
+            mass = m;
+            posx = x; posy = y;
+            velx = vx; vely = vy;
+            accx = ax; accy = ay;
+        }
+};
+
+double Particle::distance(Particle other) {
+    return sqrt(pow(posx - other.posx,2) + pow(posy - other.posy,2));
 }
 
-Eigen::MatrixXd compute_inv_r3(Eigen::MatrixXd X, Eigen::MatrixXd Y, double softening, int rank, int numprocs, int size) {
-  int sub_size = (size * size) / numprocs;
-
-  Eigen::VectorXd subX(sub_size);
-  Eigen::VectorXd subY(sub_size);
-  MPI_Scatter(X.data(), sub_size, MPI_DOUBLE, subX.data(), sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  MPI_Scatter(Y.data(), sub_size, MPI_DOUBLE, subY.data(), sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  
-  // 2. perform ones * V.tranpose()
-  Eigen::MatrixXd sub_dv = Eigen::VectorXd::Zero(sub_size);
-  sub_dv = subX.array().square() + subY.array().square();
-  sub_dv += softening*softening * Eigen::VectorXd::Ones(sub_size);
-  sub_dv = sub_dv.array().pow(-1.5);
-
-  // 3. send back the sub matrix
-  Eigen::MatrixXd dv(size, size);
-  MPI_Gather(sub_dv.data(), sub_size, MPI_DOUBLE, dv.data(), sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  return dv;
+void Particle::update_position() {
+    posx += velx * DELTA_TIME;
+    posy += vely * DELTA_TIME;
 }
 
-Eigen::MatrixXd compute_acc_component(Eigen::MatrixXd dx, Eigen::MatrixXd inv_r3, Eigen::VectorXd mass, double gravity, int rank, int numprocs, int size) {
-  int sub_size = (size * size) / numprocs;
-
-  Eigen::MatrixXd subDX(size,  size / numprocs);
-  Eigen::MatrixXd subInv(size, size / numprocs);
-  Eigen::VectorXd subMass(size / numprocs);
-
-  MPI_Scatter(dx.data(), size / numprocs, MPI_DOUBLE, subDX.data(), size / numprocs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  MPI_Scatter(inv_r3.data(), size / numprocs, MPI_DOUBLE, subInv.data(), size / numprocs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  MPI_Scatter(mass.data(), size / numprocs, MPI_DOUBLE, subMass.data(), size / numprocs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-  // std::cout << "ok scatters\n";
-  
-  // 2. perform ones * V.tranpose()
-  Eigen::VectorXd sub = subInv * subMass;
-  Eigen::VectorXd result = Eigen::VectorXd::Zero(size);
-  MPI_Reduce(sub.data(), result.data(), size / numprocs, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-  Eigen::VectorXd result_sub = Eigen::VectorXd::Zero(size / numprocs);
-  MPI_Scatter(result.data(), size / numprocs, MPI_DOUBLE, result_sub.data(), size / numprocs, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  // std::cout << "first mat mut\n";
-
-  sub = gravity * subDX * result_sub;
-  MPI_Reduce(sub.data(), result.data(), size / numprocs, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-
-  return sub;
+void Particle::update_velocity() {
+    velx += accx/mass * DELTA_TIME;
+    vely += accy/mass * DELTA_TIME;
 }
 
-Eigen::MatrixXd calculate_acceleration_matrix(Eigen::MatrixXd position, Eigen::VectorXd mass, double gravity, double softening, int n) {
+void Particle::update_acceleration(Particle other) {
+    double dist = this->distance(other);
+    double f = CONST_G*(mass * other.mass)/(pow(dist,2));
 
-  auto ones = Eigen::VectorXd::Ones(n);
-  auto x = position.col(0);
-  auto y = position.col(1);
-
-  int numprocs, rank;
-  MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  auto dx = compute_distances(x, rank, numprocs, n);
-  auto dy = compute_distances(y, rank, numprocs, n);
-
-  Eigen::MatrixXd inv_r3 = compute_inv_r3(dx, dy, softening, rank, numprocs, n);
-
-  Eigen::MatrixXd acceleration(n, 2);
-  acceleration.col(0) = compute_acc_component(dx, inv_r3, mass, gravity, rank, numprocs, n);
-  acceleration.col(1) = compute_acc_component(dy, inv_r3, mass, gravity, rank, numprocs, n);
-
-  return acceleration;
+    accx += f * (other.posx - posx) / dist;
+    accy += f * (other.posy - posy) / dist;
 }
 
+void Particle::reset_force() {
+    accx = 0.0;
+    accy = 0.0;
+}
+
+double _rand() {
+    return (double) std::rand() / RAND_MAX;
+}
+
+Particle rand_particle() {
+    return Particle(100.0 * _rand(), _rand(), _rand(), _rand(), _rand(), _rand(), _rand());
+}
+
+int B[7] = {1, 1, 1, 1, 1, 1, 1};
+MPI_Aint D[7] = {
+    0,
+    1*sizeof(double),
+    2*sizeof(double),
+    3*sizeof(double),
+    4*sizeof(double),
+    5*sizeof(double),
+    6*sizeof(double)
+};
+MPI_Datatype T[7] = {
+    MPI_DOUBLE,
+    MPI_DOUBLE,
+    MPI_DOUBLE,
+    MPI_DOUBLE,
+    MPI_DOUBLE,
+    MPI_DOUBLE,
+    MPI_DOUBLE,
+};
 
 int main(int argc, char** argv) {
-  MPI_Init(&argc, &argv);
-  int numprocs, rank;
-  MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-
-  int n = 1600;
-  double gravity = 0.00001;
-  double step_size = 20.0 / 1000.0;
-  double half_step_size = 0.5 * step_size;
-  double softening = 0.1;
-
-  MPI_Datatype line_type;
-  MPI_Type_vector(2, 2, 2, MPI_DOUBLE, &line_type);
-  MPI_Type_commit(&line_type);
-
-  auto start = std::chrono::high_resolution_clock::now();
-
-  // Init
-  Eigen::MatrixXd mat, mat_ones;
-
-  Eigen::MatrixXd position(n, 2);
-  Eigen::MatrixXd velocity(n, 2);
-  Eigen::MatrixXd acceleration(n, 2);
-  Eigen::VectorXd mass(n);
-
-  Eigen::MatrixXd com_p(1, 2);
-  Eigen::MatrixXd com_v(1 ,2);
-
-  if (rank == 0) {
-    mat = Eigen::MatrixXd::Random(n, 2);
-    mat_ones = Eigen::MatrixXd::Ones(n, 2);
-
-    position = 5.0 * (mat - 5.0 * mat_ones);
-    velocity = Eigen::MatrixXd::Zero(n, 2);
-    acceleration = Eigen::MatrixXd::Zero(n, 2);
-    mass = 500.0 * Eigen::VectorXd::Ones(n);
-
-    position.row(0) = Eigen::MatrixXd::Zero(1, 2);
-    velocity.row(0) = Eigen::MatrixXd::Zero(1, 2);
-    mass(0) = 10000.0;
-
-
-    double sum_mass = 0.0;
-    com_p = Eigen::MatrixXd::Zero(1, 2);
-    com_v = Eigen::MatrixXd::Zero(1, 2);
-
-    for (int i = 0; i < n; i++) {
-      sum_mass += mass(i);
-      com_p += mass(i) * position.row(i); 
-      com_v += mass(i) * velocity.row(i); 
+    MPI_Init(&argc, &argv);
+    if (argc != 3) {
+        fprintf(stderr, "USAGE: %s nb_particles nb_timesteps\n", argv[0]);
+        return 1;
     }
-    com_p /= sum_mass;
-    com_v /= sum_mass;
+    int nb_particles = atoi(argv[1]);
+    int nb_timesteps = atoi(argv[2]);
+    auto begin = std::chrono::high_resolution_clock::now();
 
-    for (int i = 0; i < n; i++) {
-      position.row(i) -= com_p;
-      velocity.row(i) -= com_v;
+    int world;
+    int rank;
+    MPI_Comm_size(MPI_COMM_WORLD, &world);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    MPI_Datatype mpi_dt_particle;
+    MPI_Type_create_struct(7, B, D, T, &mpi_dt_particle);
+    MPI_Type_commit(&mpi_dt_particle);
+
+    std::srand(0);
+    std::vector<Particle> particles = {};
+    particles.reserve(nb_particles);
+
+    if (rank == 0) {
+        // is there a more c++ way to do this ?
+        for (int i = 0; i < nb_particles; i++) {
+            particles.push_back(rand_particle());
+        }
     }
-  }
 
-  for (int iter = 0; iter < 400; iter++) {
-    // velocity = velocity + acceleration * half_step_size;
-    add_with_scale(velocity, acceleration, half_step_size, rank, numprocs, n, line_type);
-    // position = position + velocity * step_size;
-    add_with_scale(position, velocity, step_size, rank, numprocs, n, line_type);
+    std::vector<int> sizes;
+    std::vector<int> offsets;
+    int cum_sum = 0;
+    for (int k = 0; k < world; k++) {
+        sizes.push_back(nb_particles / world);
+        offsets.push_back(cum_sum);
+        cum_sum += sizes[k];
+    }
+    sizes[world-1] = nb_particles - (world-1) * (nb_particles/world);
+    MPI_Bcast(particles.data(), nb_particles, mpi_dt_particle, 0, MPI_COMM_WORLD);
 
-    acceleration = calculate_acceleration_matrix(position, mass, gravity, softening, n);
+    std::vector<Particle> my_particles = {};
+    my_particles.reserve(sizes[rank]);
 
-    // velocity = velocity + acceleration * half_step_size;
-    add_with_scale(velocity, acceleration, half_step_size, rank, numprocs, n, line_type);
-  }
+    auto begin_compute = std::chrono::high_resolution_clock::now();
 
-  auto stop = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration<float>(stop - start);
-  std::cout << duration.count() << std::endl;
+    for (int ts = 1; ts <= nb_timesteps; ts++) {
+        for (int i = offsets[rank]; i < offsets[rank] + sizes[rank]; i++) {
+            double accx = 0.0;
+            double accy = 0.0;
+#pragma omp parallel for shared(particles,my_particles) reduction(+:accx) reduction(+:accy)
+            for (int j = 0; j < nb_particles; j++) {
+                if (i != j) {
+                    double dist = particles[i].distance(particles[j]);
+                    double f = CONST_G*(particles[i].mass * particles[j].mass)/(pow(dist,2));
+                    accx += f * (particles[j].posx - particles[i].posx) / dist;
+                    accy += f * (particles[j].posy - particles[i].posy) / dist;
+                }
+            }
+            my_particles[i - offsets[rank]] = particles[i];
+            my_particles[i - offsets[rank]].accx = accx;
+            my_particles[i - offsets[rank]].accy = accy;
+        }
+#pragma omp parallel for shared(my_particles)
+        for (int i = 0; i < sizes[rank]; i++) {
+            my_particles[i].update_velocity();
+            my_particles[i].update_position();
+            my_particles[i].reset_force();
+        }
 
-  MPI_Finalize();
-
-  return 0;
-}
-
-// Compute A = A + alpha * B
-void add_with_scale(Eigen::MatrixXd A, Eigen::MatrixXd B, double alpha, int rank, int numprocs, int size, MPI_Datatype line_type) {
-
-  int sub_size = size / numprocs;
-  // 1. send the size of the sub vectors
-
-  // 2. create the sub vectors
-  Eigen::MatrixXd subA(sub_size, 2);
-  Eigen::MatrixXd subB(sub_size, 2);
-
-  // 3. send/recv the data for each sub vector
-  //MPI_Datatype line_t;
-  //MPI_Type_vector(2,// number of block: 2 -> (x, y)
-  //                sub_size,// size of the block: 2
-  //                size,// stride
-  //                MPI_DOUBLE, &line_t);
-  //MPI_Type_commit(&line_t);
-
-  MPI_Scatter(A.data(), sub_size, MPI_DOUBLE, subA.data(), sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  MPI_Scatter(A.data() + size, sub_size, MPI_DOUBLE, subA.data() + sub_size, sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  //MPI_Scatter(A.data(), 1, line_t, subA.data(), 2*sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  MPI_Scatter(B.data(), sub_size, MPI_DOUBLE, subB.data(), sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  MPI_Scatter(B.data() + size, sub_size, MPI_DOUBLE, subB.data() + sub_size, sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-  // 4. do the computations
-  subA = subA + subB * alpha;
-
-  // 5. gather the sub vectors
-  MPI_Gather(subA.data(), sub_size, MPI_DOUBLE, A.data(), sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  MPI_Gather(subA.data() + size, sub_size, MPI_DOUBLE, A.data() + sub_size, sub_size, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+        MPI_Allgatherv(my_particles.data(), sizes[rank], mpi_dt_particle, particles.data(), sizes.data(), offsets.data(), mpi_dt_particle, MPI_COMM_WORLD);
+    }
+    if (rank == 0) { 
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration_compute = std::chrono::duration<float>(end - begin_compute);
+        auto duration_ete = std::chrono::duration<float>(end - begin);
+        std::cout << duration_ete.count() << "," << duration_compute.count() << "," << std::setprecision (16) << particles[0].posx << std::endl;
+    }
+    MPI_Finalize();
+    return 0;
 }

@@ -1,2 +1,2 @@
 set -xe
-g++ nbody-par.cpp -o nbody-par -lm -O3 -fopenmp
+g++ nbody.cpp -o nbody -lm -O3 -fopenmp
