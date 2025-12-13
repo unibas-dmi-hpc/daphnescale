@@ -89,10 +89,10 @@ MPI_Datatype T[7] = {
 
 int main(int argc, char** argv) {
     MPI_Init(&argc, &argv);
-    if (argc != 3) {
-        fprintf(stderr, "USAGE: %s nb_particles nb_timesteps\n", argv[0]);
-        return 1;
-    }
+    // if (argc != 3) {
+    //     fprintf(stderr, "USAGE: %s nb_particles nb_timesteps\n", argv[0]);
+    //     return 1;
+    // }
     int nb_particles = atoi(argv[1]);
     int nb_timesteps = atoi(argv[2]);
     auto begin = std::chrono::high_resolution_clock::now();

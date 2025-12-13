@@ -46,7 +46,7 @@ def random_particle():
 
 def main():
     args = sys.argv
-    assert len(args) == 3
+    # assert len(args) == 3
     nb_particles = int(args[1])
     nb_timesteps = int(args[2])
     start_data = time.time()

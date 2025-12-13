@@ -68,10 +68,10 @@ Particle rand_particle() {
 }
 
 int main(int argc, char** argv) {
-    if (argc != 3) {
-        fprintf(stderr, "USAGE: %s nb_particles nb_timesteps\n", argv[0]);
-        return 1;
-    }
+    // if (argc != 3) {
+    //     fprintf(stderr, "USAGE: %s nb_particles nb_timesteps\n", argv[0]);
+    //     return 1;
+    // }
     int nb_particles = atoi(argv[1]);
     int nb_timesteps = atoi(argv[2]);
 

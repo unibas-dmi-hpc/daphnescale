@@ -67,7 +67,7 @@ def worker_update(tt):
 
 def main():
     args = sys.argv
-    assert len(args) == 4
+    # assert len(args) == 4
     nb_particles = int(args[1])
     nb_timesteps = int(args[2])
     num_threads = int(args[3])
