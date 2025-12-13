@@ -39,7 +39,7 @@ PAR_SCRIPTS_WITH_MATRICES = [
 SCRIPTS = [
   "pi_approx",
   "mergesort",
-  "nbody",   
+  # "nbody",   
 ]
 # benchmarks without matrix input where the seq implementation is used as par, always true for daphne
 SEQ_AS_PAR_SCRIPTS = [
@@ -48,7 +48,7 @@ SEQ_AS_PAR_SCRIPTS = [
 PAR_SCRIPTS = [
   "pi_approx",
   "mergesort",
-  "nbody",
+  # "nbody",
 ]
 
 TOTAL_ITERS = 5
@@ -122,7 +122,7 @@ VICTIMS = [
 ]
 
 # Sort arguments
-ARRAY_SIZE = 10_000
+ARRAY_SIZE = 1_000_000
 THRESHOLD = 32
 
 # QS arguments
@@ -133,6 +133,10 @@ QS_INPUT = f"arrays/quicksort_input_N{ARRAY_SIZE}_d{MAX_DEPTH}.dat"
 
 # Pi Approx Arguments
 NUM_INTERVALS = 500_000_000
+
+# NBody Arguments
+NUM_PARTICLES = 100_000
+NUM_TIMESTEPS = 10
 
 INPUT_DATA = {
     "quicksort": QS_INPUT,
@@ -181,19 +185,24 @@ ARGUMENTS = {
     },
     "nbody": {
         "seq": {
-            "args": ["num_intervals"],
-            "num_intervals": [NUM_INTERVALS],
+            "args": ["num_particles", "num_timesteps"],
+            "num_particles": [NUM_PARTICLES],
+            "num_timesteps": [NUM_TIMESTEPS],
         },
         "par": {
-            "args": ["num_intervals", "num_threads"],
-            "num_intervals": [NUM_INTERVALS],
+            "args": ["num_particles", "num_timesteps", "num_threads"],
+            "num_particles": [NUM_PARTICLES],
+            "num_timesteps": [NUM_TIMESTEPS],
         },
         "mpi_local": {
-            "args": ["num_intervals"], # no num_workers for mpi as comm.Get_size() is used
-            "num_intervals": [NUM_INTERVALS],
+            "args": ["num_particles", "num_timesteps"], # no num_workers for mpi as comm.Get_size() is used
+            "num_particles": [NUM_PARTICLES],
+            "num_timesteps": [NUM_TIMESTEPS],
         },  
         "mpi_scale": {
-            "args": ["num_intervals"], # no num_workers for mpi as comm.Get_size() is used
-            "num_intervals": [NUM_INTERVALS],
+            "args": ["num_particles", "num_timesteps"], # no num_workers for mpi as comm.Get_size() is used
+            "num_particles": [NUM_PARTICLES],
+            "num_timesteps": [NUM_TIMESTEPS],
         },     
+    }
 }
