@@ -1,0 +1,14 @@
+N = 100000;
+approx = 0.0;
+t1 = now();
+for (i in 0:N) {
+    x = as.scalar(rand(1, 1, 0.0, 1.0, 1.0, 2*i));
+    y = as.scalar(rand(1, 1, 0.0, 1.0, 1.0, 2*i+1));
+    if (x * x + y * y < 1.0) {
+        approx = approx + 1.0;
+    }
+}
+res = 4.0 * approx / N;
+t2 = now();
+print("PI: "+res+" computed in "+(t2-t1)/1e9+"seconds");
+
