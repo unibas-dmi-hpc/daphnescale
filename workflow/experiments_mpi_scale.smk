@@ -8,14 +8,14 @@ rule all:
       lang=["cpp","py","jl"],\
       nb_nodes=MPI_SCALE_NB_NODES,\
       iter=ITERATIONS),
-    # expand("results/{benchmark}/{form}_nodes/daph/{scheme}-{layout}-{victim}/{nb_nodes}/{iter}.dat",\
-    #   benchmark=SCRIPTS,\
-    #   form=["mpi_scale"],\
-    #   scheme=["static"],\
-    #   layout=["centralized"],\
-    #   victim=["seq"],\
-    #   nb_nodes=MPI_SCALE_NB_NODES,\
-    #   iter=ITERATIONS),  
+    expand("results/{benchmark}/{form}_nodes/daph/{scheme}-{layout}-{victim}/{nb_nodes}/{iter}.dat",\
+      benchmark=SCRIPTS,\
+      form=["mpi_scale"],\
+      scheme=["static"],\
+      layout=["centralized"],\
+      victim=["seq"],\
+      nb_nodes=MPI_SCALE_NB_NODES,\
+      iter=ITERATIONS),  
 
 rule run_expe_mpi_jupycpp:
   input:

@@ -9,7 +9,7 @@ LANGUAGES = [
   "py",
   "jl",
   "cpp",
-  # "daph"
+  "daph"
 ]
 
 MATRICES = [
@@ -39,7 +39,7 @@ PAR_SCRIPTS_WITH_MATRICES = [
 SCRIPTS = [
   "pi_approx",
   "mergesort",
-  # "nbody",   
+  "nbody",   
 ]
 # benchmarks without matrix input where the seq implementation is used as par, always true for daphne
 SEQ_AS_PAR_SCRIPTS = [
@@ -48,6 +48,7 @@ SEQ_AS_PAR_SCRIPTS = [
 PAR_SCRIPTS = [
   "pi_approx",
   "mergesort",
+  "nbody",
 ]
 
 TOTAL_ITERS = 5
@@ -121,7 +122,7 @@ VICTIMS = [
 ]
 
 # Sort arguments
-ARRAY_SIZE = 1_000_000
+ARRAY_SIZE = 10_000
 THRESHOLD = 32
 
 # QS arguments
@@ -178,4 +179,21 @@ ARGUMENTS = {
             "num_intervals": [NUM_INTERVALS],
         },                
     },
+    "nbody": {
+        "seq": {
+            "args": ["num_intervals"],
+            "num_intervals": [NUM_INTERVALS],
+        },
+        "par": {
+            "args": ["num_intervals", "num_threads"],
+            "num_intervals": [NUM_INTERVALS],
+        },
+        "mpi_local": {
+            "args": ["num_intervals"], # no num_workers for mpi as comm.Get_size() is used
+            "num_intervals": [NUM_INTERVALS],
+        },  
+        "mpi_scale": {
+            "args": ["num_intervals"], # no num_workers for mpi as comm.Get_size() is used
+            "num_intervals": [NUM_INTERVALS],
+        },     
 }
