@@ -1,5 +1,5 @@
 n = $n;
-nb_timesteps = $t;
+nb_timesteps = $p;
 start_data = now();
 gravity = 0.00001;
 step_size = 20.0 / 1000.0;
