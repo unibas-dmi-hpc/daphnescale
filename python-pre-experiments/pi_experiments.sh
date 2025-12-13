@@ -32,9 +32,9 @@ combos=(
 	# "mpi4py py314 mpi none"	
 	# "numba py312 python none"
 	# "pyomp py312 python none"	
-	"numpy py314 python viztracer"
-	"threads py314t python viztracer"
-	"threads py314 python viztracer"
+	# "numpy py314 python viztracer"
+	# "threads py314t python viztracer"
+	# "threads py314 python viztracer"
 )
 
 profile=1 # 0 false --> performance experiment, 1 true --> profiling experiment
@@ -45,7 +45,7 @@ nodes=1  # single node experiments
 if (( profile == 1 )); then
     res_path="${base_res_path}profiling/"
     mkdir -p "$res_path"
-	n=1_000_000 # number of intervals in the numerical integral summation
+	n=50_000_000 # number of intervals in the numerical integral summation
 	job_time="0-00:10:00"
     profiler="none"
 	repetitions=1	
@@ -85,9 +85,9 @@ do
 			cpus_per_rank_list="1"
 		elif [[ "$parallel_type" == "python" || "$parallel_type" == "omp" ]]; then
 			ranks_per_node_list="1"
-			cpus_per_rank_list="8"
+			cpus_per_rank_list="4"
 		elif [[ "$parallel_type" == "mpi" ]]; then
-			ranks_per_node_list="8"
+			ranks_per_node_list="4"
 			cpus_per_rank_list="1"
 		fi	
     fi
