@@ -39,7 +39,7 @@ PAR_SCRIPTS_WITH_MATRICES = [
 SCRIPTS = [
   "pi_approx",
   "mergesort",
-  # "nbody",   
+  "nbody",   
 ]
 # benchmarks without matrix input where the seq implementation is used as par, always true for daphne
 SEQ_AS_PAR_SCRIPTS = [
@@ -48,7 +48,7 @@ SEQ_AS_PAR_SCRIPTS = [
 PAR_SCRIPTS = [
   "pi_approx",
   "mergesort",
-  # "nbody",
+  "nbody",
 ]
 
 TOTAL_ITERS = 5
@@ -135,9 +135,10 @@ QS_INPUT = f"arrays/quicksort_input_N{ARRAY_SIZE}_d{MAX_DEPTH}.dat"
 NUM_INTERVALS = 500_000_000
 
 # NBody Arguments
-NUM_PARTICLES = 100_000
-NUM_TIMESTEPS = 10
+NUM_PARTICLES = 5_000
+NUM_TIMESTEPS = 50
 
+# If input data is needed for a benchmark
 INPUT_DATA = {
     "quicksort": QS_INPUT,
 }
@@ -203,6 +204,6 @@ ARGUMENTS = {
             "args": ["num_particles", "num_timesteps"], # no num_workers for mpi as comm.Get_size() is used
             "num_particles": [NUM_PARTICLES],
             "num_timesteps": [NUM_TIMESTEPS],
-        },     
+        },            
     }
 }
